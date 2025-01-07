@@ -1,0 +1,132 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+h1 {
+    text-align: center;
+    color: #1a73e8;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    font-size: 2.5rem;
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+.chart-container {
+    width: 95%;
+    height: 750px;
+    margin: 0 auto;
+    background-color: #fff;
+    box-shadow: none;
+    border-radius: 0;
+    margin-top: 20px;
+    margin-bottom: 0px;
+}
+
+.back-button-container {
+    position: absolute;
+    top: 50px;
+    left: 170px;
+}
+
+.back-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #1a73e8;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.back-button:hover {
+    background-color: #1261c4;
+}
+
+.date-filter-container {
+    text-align: center;
+    margin: 40px 0 20px 0;
+    padding-top: 20px;
+}
+
+@media (max-width: 768px) {
+    .chart-container {
+        width: 80%;
+        height: 400px;
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .chart-container {
+        width: 95%;
+        height: 300px;
+        margin: 0 auto;
+    }
+}
+
+#ic-chart {
+    height: 600px;
+
+}
+
+/* 图表和统计表容器 */
+.chart-and-stats-container {
+    display: flex;
+    flex-direction: column;
+    width: 95%;
+    margin: 0px auto;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+/* 因子统计表格样式 */
+.stats-table-container {
+    width: 95%;
+    margin: 0 auto;
+    background-color: transparent;
+    box-shadow: none;
+    border-radius: 0;
+    margin-top: 0px;
+    margin-bottom: 40px;
+}
+
+.stats-table-container table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    border: none;
+}
+
+.stats-table-container th,
+.stats-table-container td {
+    padding: 12px;
+    border: none;
+    border-bottom: 1px solid #ddd;
+}
+
+.stats-table-container th {
+    background-color: transparent;
+    color: #1a73e8;
+    font-weight: 600;
+    border-bottom: 2px solid #1a73e8;
+}
+
+.stats-table-container tr:hover {
+    background-color: rgba(26, 115, 232, 0.05);
+}
+
+@media (max-width: 768px) {
+    .stats-table-container {
+        width: 90%;
+        overflow-x: auto;
+    }
+}
