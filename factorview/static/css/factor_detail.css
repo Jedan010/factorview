@@ -124,6 +124,15 @@ h1 {
     background-color: rgba(26, 115, 232, 0.05);
 }
 
+.ls-hedge-row {
+    background-color: #fff0f0;
+    font-weight: bold;
+}
+
+.ls-hedge-row:hover {
+    background-color: #ffe0e0;
+}
+
 @media (max-width: 768px) {
     .stats-table-container {
         width: 90%;

@@ -70,15 +70,16 @@ function plotCharts(data) {
             }
         }
     ], {
-        title: 'IC Series',
-        xaxis: { title: 'Date' },
-        yaxis: { title: 'IC' },
+        title: { text: 'IC Series', font: { size: 20, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } },
+        xaxis: { title: { text: 'Date', font: { size: 16, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } } },
+        yaxis: { title: { text: 'IC', font: { size: 16, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } } },
         barmode: 'group',
         legend: {
             orientation: 'h',
             y: -0.2,
             x: 0.5,
-            xanchor: 'center'
+            xanchor: 'center',
+            font: { size: 14, family: 'Arial, sans-serif', color: '#000', weight: 'bold' }
         },
     });
 
@@ -105,20 +106,45 @@ function plotCharts(data) {
         mode: 'lines',
         name: i < 10 ? `Group ${i + 1}` : 'LS Hedge',
         line: {
-            width: 2
+            width: i === 10 ? 6 : 2,
+            color: i === 10 ? '#ff0000' : `hsl(${i * 36}, 80%, 50%)`,
+            dash: undefined
         }
-
     }));
 
+    // 增加 LS Hedge 的回撤曲线
+    const lsHedgeDrawdown = {
+        x: data.group.index,
+        y: calcDrawdown(data.group.values.map(v => v[10])),
+        type: 'scatter',
+        mode: 'lines',
+        name: 'LS Hedge Drawdown',
+        yaxis: 'y2', // 添加 yaxis 属性指定使用第二个y轴
+        fill: 'tozeroy',
+        fillcolor: 'rgba(255,0,0,0.3)',
+        line: {
+            width: 0
+        }
+    };
+
+    groupData.push(lsHedgeDrawdown);
+
     Plotly.newPlot('group-chart', groupData, {
-        title: 'Group Returns',
-        xaxis: { title: 'Date' },
-        yaxis: { title: 'Return' },
+        title: { text: 'Group Returns', font: { size: 20, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } },
+        xaxis: { title: { text: 'Date', font: { size: 16, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } } },
+        yaxis: { title: { text: 'Return', font: { size: 16, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } } },
+        yaxis2: { // 添加第二个y轴配置
+            title: { text: 'Drawdown', font: { size: 16, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } },
+            overlaying: 'y',
+            side: 'right',
+            tickformat: ',.1%' // 添加百分数格式
+        },
         legend: {
             orientation: 'h',
             y: -0.15,
             x: 0.5,
-            xanchor: 'center'
+            xanchor: 'center',
+            font: { size: 14, family: 'Arial, sans-serif', color: '#000', weight: 'bold' }
         },
     });
 
@@ -128,6 +154,10 @@ function plotCharts(data) {
         const perfStats = calcPerf(groupReturns);
 
         const row = document.createElement('tr');
+        if (i === 10) {
+            row.style.backgroundColor = '#fff0f0';
+            row.style.fontWeight = 'bold';
+        }
         row.innerHTML = `
             <td>${factorName}</td>
             <td>${i < 10 ? `Group ${i + 1}` : 'LS Hedge'}</td>
@@ -150,7 +180,8 @@ function plotCharts(data) {
         mode: 'lines',
         name: backtest_names[i],
         line: {
-            width: 2
+            width: i === 2 ? 4 : 2,
+            color: i === 2 ? '#ff0000' : undefined
         }
     }));
 
@@ -169,12 +200,13 @@ function plotCharts(data) {
             }
         }
     );
+
     Plotly.newPlot('backtest-chart', backtestData, {
-        title: 'Backtest Results',
-        xaxis: { title: 'Date' },
-        yaxis: { title: 'Return' },
+        title: { text: 'Backtest Results', font: { size: 20, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } },
+        xaxis: { title: { text: 'Date', font: { size: 16, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } } },
+        yaxis: { title: { text: 'Return', font: { size: 16, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } } },
         yaxis2: { // 添加第二个y轴配置
-            title: 'Drawdown',
+            title: { text: 'Drawdown', font: { size: 16, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } },
             overlaying: 'y',
             side: 'right',
             tickformat: ',.1%' // 添加百分数格式
@@ -183,8 +215,50 @@ function plotCharts(data) {
             orientation: 'h',
             y: -0.15,
             x: 0.5,
-            xanchor: 'center'
+            xanchor: 'center',
+            font: { size: 14, family: 'Arial, sans-serif', color: '#000', weight: 'bold' }
         }
+    });
+
+    // 更新回测统计表
+    backtest_names.forEach((name, i) => {
+        const returns = data.backtest_ret.values.map(v => v[i]);
+        const perfStats = calcPerf(returns);
+
+        // 计算总年数
+        const firstDate = new Date(data.backtest_ret.index[0]);
+        const lastDate = new Date(data.backtest_ret.index[data.backtest_ret.index.length - 1]);
+        const totalYears = (lastDate - firstDate) / (1000 * 60 * 60 * 24 * 365);
+        
+        // 计算新增指标
+        const positions = data.backtest_ret.values.map(v => v[v.length - 3]); // 持仓数
+        const turnovers = data.backtest_ret.values.map(v => v[v.length - 2]); // 换手率
+        const fees = data.backtest_ret.values.map(v => v[v.length - 1]); // 交易费率
+        
+        const avgPosition = positions.reduce((a, b) => a + b, 0) / positions.length;
+        const annualTurnover = turnovers.reduce((a, b) => a + b, 0) / totalYears;
+        const annualFee = fees.reduce((a, b) => a + b, 0) / totalYears;
+
+        const row = document.createElement('tr');
+        if (i === 2) {
+            row.style.backgroundColor = '#fff0f0';
+            row.style.fontWeight = 'bold';
+        }
+        row.innerHTML = `
+            <td>${factorName}</td>
+            <td>${name}</td>
+            <td>${(perfStats.cumulativeReturn * 100).toFixed(2)}%</td>
+            <td>${totalYears.toFixed(1)}</td>
+            <td>${(perfStats.annualizedReturn * 100).toFixed(2)}%</td>
+            <td>${(perfStats.annualizedVolatility * 100).toFixed(2)}%</td>
+            <td>${(perfStats.maxDrawdown * 100).toFixed(2)}%</td>
+            <td>${perfStats.sharpeRatio.toFixed(2)}</td>
+            <td>${perfStats.calmarRatio.toFixed(2)}</td>
+            <td>${avgPosition.toFixed(0)}</td>
+            <td>${(annualTurnover).toFixed(0)}</td>
+            <td>${(annualFee * 100).toFixed(2)}%</td>
+        `;
+        document.getElementById('backtest-stats-table-container').querySelector('table tbody').appendChild(row);
     });
 }
 
