@@ -4,20 +4,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Factor List</title>
+    <title>因子列表</title>
     <link rel="stylesheet" href="/static/css/index.css">
 </head>
 
 <body>
-    <h1>Factor List</h1>
+    <h1>因子列表</h1>
+
     <table id="factors-table">
         <thead>
             <tr>
-                <th>Factor Name</th>
-                <th>Type</th>
-                <th>IC Statistic</th>
-                <th>Group Long/Short Return</th>
-                <th>Backtest Return</th>
+                <th>
+                    因子名称
+                    <button class="filter-btn"><i class="gear-icon"></i></button>
+                    <div class="filter-options">
+                        <div class="checkbox-list" id="factor-name-filters">
+                            <!-- Checkboxes will be populated dynamically -->
+                        </div>
+                        <button class="apply-filter">应用</button>
+                    </div>
+                </th>
+                <th>
+                    类型
+                    <button class="filter-btn"><i class="gear-icon"></i></button>
+                    <div class="filter-options">
+                        <div class="checkbox-list" id="type-filters">
+                            <!-- Checkboxes will be populated dynamically -->
+                        </div>
+                        <button class="apply-filter">应用</button>
+                    </div>
+                </th>
+                <th>
+                    IC统计值
+                    <button class="filter-btn"><i class="gear-icon"></i></button>
+                    <div class="filter-options">
+                        <input type="number" placeholder="最小值">
+                        <input type="number" placeholder="最大值">
+                        <button class="apply-filter">应用</button>
+                    </div>
+                </th>
+                <th>
+                    多空组合收益
+                    <button class="filter-btn"><i class="gear-icon"></i></button>
+                    <div class="filter-options">
+                        <input type="number" placeholder="最小值">
+                        <input type="number" placeholder="最大值">
+                        <button class="apply-filter">应用</button>
+                    </div>
+                </th>
+                <th>
+                    回测收益
+                    <button class="filter-btn"><i class="gear-icon"></i></button>
+                    <div class="filter-options">
+                        <input type="number" placeholder="最小值">
+                        <input type="number" placeholder="最大值">
+                        <button class="apply-filter">应用</button>
+                    </div>
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -26,27 +69,7 @@
     </table>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            fetch('/api/factors')
-                .then(response => response.json())
-                .then(data => {
-                    const tableBody = document.querySelector('#factors-table tbody');
-                    data.forEach(factor => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td><a href="/factors/${factor.factor_name}" class="factor-link" data-factor="${factor.factor_name}">${factor.factor_name}</td>
-                            <td>${factor.class_name}</td>
-                            <td>${factor.ic.toFixed(4)}</td>
-                            <td>${(factor.group_pnl * 100).toFixed(2)}%</td>
-                            <td>${(factor.backtest_ret * 100).toFixed(2)}%</td>
-                        `;
-                        tableBody.appendChild(row);
-                    });
-                })
-                .catch(error => console.error('Error:', error));
-        });
-    </script>
+    <script src="/static/js/index.js"></script>
 </body>
 
 </html>

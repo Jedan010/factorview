@@ -70,9 +70,9 @@ function plotCharts(data) {
             }
         }
     ], {
-        title: { text: 'IC Series', font: { size: 20, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } },
-        xaxis: { title: { text: 'Date', font: { size: 16, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } } },
-        yaxis: { title: { text: 'IC', font: { size: 16, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } } },
+        title: { text: 'IC序列', font: { size: 20, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } },
+        xaxis: { title: { text: '日期', font: { size: 16, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } } },
+        yaxis: { title: { text: 'IC值', font: { size: 16, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } } },
         barmode: 'group',
         legend: {
             orientation: 'h',
@@ -130,11 +130,11 @@ function plotCharts(data) {
     groupData.push(lsHedgeDrawdown);
 
     Plotly.newPlot('group-chart', groupData, {
-        title: { text: 'Group Returns', font: { size: 20, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } },
-        xaxis: { title: { text: 'Date', font: { size: 16, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } } },
-        yaxis: { title: { text: 'Return', font: { size: 16, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } } },
+        title: { text: '分组收益', font: { size: 20, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } },
+        xaxis: { title: { text: '日期', font: { size: 16, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } } },
+        yaxis: { title: { text: '收益率', font: { size: 16, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } } },
         yaxis2: { // 添加第二个y轴配置
-            title: { text: 'Drawdown', font: { size: 16, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } },
+            title: { text: '回撤', font: { size: 16, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } },
             overlaying: 'y',
             side: 'right',
             tickformat: ',.1%' // 添加百分数格式
@@ -202,11 +202,11 @@ function plotCharts(data) {
     );
 
     Plotly.newPlot('backtest-chart', backtestData, {
-        title: { text: 'Backtest Results', font: { size: 20, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } },
-        xaxis: { title: { text: 'Date', font: { size: 16, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } } },
-        yaxis: { title: { text: 'Return', font: { size: 16, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } } },
+        title: { text: '回测结果', font: { size: 20, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } },
+        xaxis: { title: { text: '日期', font: { size: 16, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } } },
+        yaxis: { title: { text: '收益率', font: { size: 16, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } } },
         yaxis2: { // 添加第二个y轴配置
-            title: { text: 'Drawdown', font: { size: 16, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } },
+            title: { text: '回撤', font: { size: 16, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } },
             overlaying: 'y',
             side: 'right',
             tickformat: ',.1%' // 添加百分数格式

@@ -1,9 +1,8 @@
 import numpy as np
 import pandas as pd
 from flask import Flask, jsonify, render_template
-from quantfactor import p
 
-from data_loader import get_factor_info, get_factor_perf
+from .data_loader import get_factor_info, get_factor_perf
 
 app = Flask(__name__)
 
