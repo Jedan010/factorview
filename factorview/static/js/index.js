@@ -1,3 +1,6 @@
+// 导入工具函数
+import { getDateRange, sortTable } from './utils.js';
+
 // 因子表功能
 document.addEventListener('DOMContentLoaded', function () {
   const table = document.querySelector('#factors-table');
@@ -11,55 +14,6 @@ document.addEventListener('DOMContentLoaded', function () {
     optimizer_index: '000905.SH',
     benchmark_index: '000905.SH'
   };
-
-  // 日期计算函数
-  function getDateRange(period) {
-    const now = new Date();
-    switch (period) {
-      case 'ytd': {
-        const startDate = new Date(now);
-        startDate.setMonth(0, 1);
-        return {
-          start_date: startDate.toISOString().split('T')[0],
-          end_date: now.toISOString().split('T')[0]
-        };
-      }
-      case '3m': {
-        const startDate = new Date(now);
-        startDate.setMonth(now.getMonth() - 3);
-        return {
-          start_date: startDate.toISOString().split('T')[0],
-          end_date: now.toISOString().split('T')[0]
-        };
-      }
-      case '1y': {
-        const startDate = new Date(now);
-        startDate.setFullYear(now.getFullYear() - 1);
-        return {
-          start_date: startDate.toISOString().split('T')[0],
-          end_date: now.toISOString().split('T')[0]
-        };
-      }
-      case '3y': {
-        const startDate = new Date(now);
-        startDate.setFullYear(now.getFullYear() - 3);
-        return {
-          start_date: startDate.toISOString().split('T')[0],
-          end_date: now.toISOString().split('T')[0]
-        };
-      }
-      case '5y': {
-        const startDate = new Date(now);
-        startDate.setFullYear(now.getFullYear() - 5);
-        return {
-          start_date: startDate.toISOString().split('T')[0],
-          end_date: now.toISOString().split('T')[0]
-        };
-      }
-      default:
-        return { start_date: null, end_date: null };
-    }
-  }
 
   // 初始化表格
   table.setAttribute('data-sort', 'asc');
@@ -195,90 +149,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
       // 点击排序按钮排序
       sortBtn.addEventListener('click', () => {
-        sortTable(index);
+        const isAscending = table.getAttribute('data-sort') === 'asc';
+        sortTable(table, index, {
+          order: isAscending ? 'asc' : 'desc',
+          dataType: 'auto'
+        });
+        table.setAttribute('data-sort', isAscending ? 'desc' : 'asc');
       });
     });
-  }
-
-  function sortTable(column) {
-    try {
-      // 验证数据格式
-      if (!Array.isArray(allFactors)) {
-        console.error('Invalid data format in sortTable:', allFactors);
-        return;
-      }
-
-      const tbody = table.querySelector('tbody');
-      if (!tbody) {
-        console.error('Table body not found');
-        return;
-      }
-
-      const rows = Array.from(tbody.querySelectorAll('tr'));
-      if (rows.length === 0) {
-        console.warn('No rows to sort');
-        return;
-      }
-
-      const isAscending = table.getAttribute('data-sort') === 'asc';
-
-      // 获取列数据类型
-      const firstRow = rows[0];
-      const sampleValue = firstRow.children[column]?.textContent?.trim();
-      const isPercent = sampleValue?.endsWith('%');
-      const isNumber = !isNaN(parseFloat(sampleValue));
-
-      rows.sort((a, b) => {
-        try {
-          const aValue = a.children[column]?.textContent?.trim() || '';
-          const bValue = b.children[column]?.textContent?.trim() || '';
-
-          // 处理空值
-          if (!aValue && !bValue) return 0;
-          if (!aValue) return isAscending ? 1 : -1;
-          if (!bValue) return isAscending ? -1 : 1;
-
-          // 处理百分比数字（去掉%）
-          if (isPercent) {
-            const aNum = parseFloat(aValue);
-            const bNum = parseFloat(bValue);
-            return isAscending ? aNum - bNum : bNum - aNum;
-          }
-
-          // 处理普通数字（包括负数）
-          if (isNumber) {
-            const aNum = parseFloat(aValue);
-            const bNum = parseFloat(bValue);
-            return isAscending ? aNum - bNum : bNum - aNum;
-          }
-
-          // 处理字符串排序
-          return isAscending ?
-            aValue.localeCompare(bValue, undefined, { numeric: true }) :
-            bValue.localeCompare(aValue, undefined, { numeric: true });
-
-        } catch (error) {
-          console.error('Error comparing values:', error);
-          return 0;
-        }
-      });
-
-      // 清空并重新插入排序后的行
-      while (tbody.firstChild) {
-        tbody.removeChild(tbody.firstChild);
-      }
-      rows.forEach(row => tbody.appendChild(row));
-
-      // 更新排序状态
-      table.setAttribute('data-sort', isAscending ? 'desc' : 'asc');
-
-      // 更新表头样式
-      const headers = table.querySelectorAll('th');
-      headers.forEach(header => header.classList.remove('sorted-asc', 'sorted-desc'));
-      headers[column].classList.add(isAscending ? 'sorted-asc' : 'sorted-desc');
-
-    } catch (error) {
-      console.error('Error in sortTable:', error);
-    }
   }
 });

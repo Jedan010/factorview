@@ -141,6 +141,132 @@ function calcICStats(icValues) {
     };
 }
 
+// 计算日期范围
+function getDateRange(period, options = {}) {
+  const now = options.date || new Date();
+  const format = options.format || 'YYYY-MM-DD';
+  const timezone = options.timezone || 'UTC';
+
+  const formatDate = (date) => {
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: timezone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
+    const parts = formatter.format(date);
+    return format
+      .replace('YYYY', parts[2])
+      .replace('MM', parts[0])
+      .replace('DD', parts[1]);
+  };
+
+  const getStartDate = (years = 0, months = 0, days = 0) => {
+    const startDate = new Date(now);
+    startDate.setFullYear(now.getFullYear() - years);
+    startDate.setMonth(now.getMonth() - months);
+    startDate.setDate(now.getDate() - days);
+    return startDate;
+  };
+
+  const periods = {
+    ytd: () => ({
+      start_date: formatDate(getStartDate(0, now.getMonth(), now.getDate() - 1)),
+      end_date: formatDate(now)
+    }),
+    '3m': () => ({
+      start_date: formatDate(getStartDate(0, 3)),
+      end_date: formatDate(now)
+    }),
+    '1y': () => ({
+      start_date: formatDate(getStartDate(1)),
+      end_date: formatDate(now)
+    }),
+    '3y': () => ({
+      start_date: formatDate(getStartDate(3)),
+      end_date: formatDate(now)
+    }),
+    '5y': () => ({
+      start_date: formatDate(getStartDate(5)),
+      end_date: formatDate(now)
+    }),
+    custom: () => ({
+      start_date: options.start_date || null,
+      end_date: options.end_date || null
+    })
+  };
+
+  return periods[period] ? periods[period]() : periods.custom();
+}
+
+// 通用表格排序
+function sortTable(table, column, options = {}) {
+  const {
+    dataType = 'auto', // auto|number|string|date
+    order = 'asc', // asc|desc
+    nullsFirst = true,
+    caseSensitive = false,
+    customSortFn = null
+  } = options;
+
+  const tbody = table.querySelector('tbody');
+  if (!tbody) return;
+
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  if (rows.length === 0) return;
+
+  const getCellValue = (row, index) => {
+    const cell = row.children[index];
+    if (!cell) return null;
+    let value = cell.textContent.trim();
+    
+    if (value === 'N/A' || value === '') return null;
+    
+    if (dataType === 'number' || (dataType === 'auto' && !isNaN(value))) {
+      return parseFloat(value.replace('%', ''));
+    }
+    
+    if (dataType === 'date') {
+      return new Date(value);
+    }
+    
+    return caseSensitive ? value : value.toLowerCase();
+  };
+
+  const compare = (a, b) => {
+    if (a === null && b === null) return 0;
+    if (a === null) return nullsFirst ? -1 : 1;
+    if (b === null) return nullsFirst ? 1 : -1;
+    
+    if (customSortFn) {
+      return customSortFn(a, b);
+    }
+    
+    if (typeof a === 'number' && typeof b === 'number') {
+      return a - b;
+    }
+    
+    return a.localeCompare(b, undefined, { numeric: true });
+  };
+
+  rows.sort((a, b) => {
+    const aValue = getCellValue(a, column);
+    const bValue = getCellValue(b, column);
+    return order === 'asc' ? compare(aValue, bValue) : compare(bValue, aValue);
+  });
+
+  // 清空并重新插入排序后的行
+  while (tbody.firstChild) {
+    tbody.removeChild(tbody.firstChild);
+  }
+  rows.forEach(row => tbody.appendChild(row));
+
+  // 更新表头样式
+  const headers = table.querySelectorAll('th');
+  headers.forEach(header => header.classList.remove('sorted-asc', 'sorted-desc'));
+  headers[column].classList.add(order === 'asc' ? 'sorted-asc' : 'sorted-desc');
+}
+
 // 导出函数供其他模块使用
 export {
     calcNav,
@@ -152,5 +278,7 @@ export {
     calcAnnualizedVolatility,
     calcSharpeRatio,
     calcCalmarRatio,
-    calcPerf
+    calcPerf,
+    getDateRange,
+    sortTable
 };
