@@ -3,8 +3,10 @@ import pandas as pd
 from flask import Flask, jsonify, render_template, request
 
 from factorview.data_loader import get_factor_stats, get_factor_perf
+from factorview.strategy_routes import init_strategy_routes
 
 app = Flask(__name__, static_folder="static")
+init_strategy_routes(app)
 
 
 def clean_for_json(data):
@@ -44,6 +46,14 @@ def home():
 @app.route("/factors")
 def factor_list():
     return render_template("factor.html")
+
+@app.route("/strategies")
+def strategy_list():
+    return render_template("strategy.html")
+
+@app.route("/strategies/<int:strategy_id>")
+def strategy_detail(strategy_id):
+    return render_template("strategy_detail.html", strategy_id=strategy_id)
 
 
 @app.route("/factors/<factor_name>")

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 id="strategy-name"></h1>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">策略表现</div>
+                <div class="card-body">
+                    <canvas id="performance-chart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">策略统计</div>
+                <div class="card-body">
+                    <table class="table">
+                        <tr>
+                            <th>年化收益</th>
+                            <td id="annual-return"></td>
+                        </tr>
+                        <tr>
+                            <th>最大回撤</th>
+                            <td id="max-drawdown"></td>
+                        </tr>
+                        <tr>
+                            <th>夏普比率</th>
+                            <td id="sharpe-ratio"></td>
+                        </tr>
+                        <tr>
+                            <th>胜率</th>
+                            <td id="win-rate"></td>
+                        </tr>
+                        <tr>
+                            <th>交易次数</th>
+                            <td id="trade-count"></td>
+                        </tr>
+                        <tr>
+                            <th>平均持仓周期</th>
+                            <td id="avg-holding-period"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/strategy_detail.js') }}"></script>
+{% endblock %}
