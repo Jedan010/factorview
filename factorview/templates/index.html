@@ -11,6 +11,53 @@
 <body>
     <h1>因子列表</h1>
 
+    <div class="filter-section">
+        <div class="filter-group">
+            <label>股票池:</label>
+            <select id="pool-filter">
+                <option value="all" selected>全部</option>
+                <option value="000300.SH">沪深300</option>
+                <option value="000905.SH">中证500</option>
+                <option value="000852.SH">中证1000</option>
+                <option value="932000.CSI">中证2000</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label>回测区间:</label>
+            <select id="period-filter">
+                <option value="ytd">年初至今</option>
+                <option value="3m">近3个月</option>
+                <option value="1y" selected>近1年</option>
+                <option value="3y">近3年</option>
+                <option value="5y">近5年</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label>基准指数:</label>
+            <select id="benchmark-filter">
+                <option value="000905.SH" selected>中证500</option>
+                <option value="000300.SH">沪深300</option>
+                <option value="000852.SH">中证1000</option>
+                <option value="932000.CSI">中证2000</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label>优化基准:</label>
+            <select id="optimizer-filter">
+                <option value="000905.SH" selected>中证500</option>
+                <option value="000300.SH">沪深300</option>
+                <option value="000852.SH">中证1000</option>
+                <option value="932000.CSI">中证2000</option>
+                <option value="NA">NA</option>
+            </select>
+        </div>
+
+        <button id="apply-filters">应用筛选</button>
+    </div>
+
     <table id="factors-table">
         <thead>
             <tr>
@@ -35,7 +82,7 @@
                     </div>
                 </th>
                 <th>
-                    IC统计值
+                    IC
                     <button class="filter-btn"><i class="gear-icon"></i></button>
                     <div class="filter-options">
                         <input type="number" placeholder="最小值">
@@ -44,7 +91,7 @@
                     </div>
                 </th>
                 <th>
-                    多空组合收益
+                    ICIR
                     <button class="filter-btn"><i class="gear-icon"></i></button>
                     <div class="filter-options">
                         <input type="number" placeholder="最小值">
@@ -53,7 +100,70 @@
                     </div>
                 </th>
                 <th>
-                    回测收益
+                    TOP年化收益率
+                    <button class="filter-btn"><i class="gear-icon"></i></button>
+                    <div class="filter-options">
+                        <input type="number" placeholder="最小值">
+                        <input type="number" placeholder="最大值">
+                        <button class="apply-filter">应用</button>
+                    </div>
+                </th>
+                <th>
+                    BOTTON年化收益率
+                    <button class="filter-btn"><i class="gear-icon"></i></button>
+                    <div class="filter-options">
+                        <input type="number" placeholder="最小值">
+                        <input type="number" placeholder="最大值">
+                        <button class="apply-filter">应用</button>
+                    </div>
+                </th>
+                <th>
+                    多空年化收益率
+                    <button class="filter-btn"><i class="gear-icon"></i></button>
+                    <div class="filter-options">
+                        <input type="number" placeholder="最小值">
+                        <input type="number" placeholder="最大值">
+                        <button class="apply-filter">应用</button>
+                    </div>
+                </th>
+                <th>
+                    超额年化收益率
+                    <button class="filter-btn"><i class="gear-icon"></i></button>
+                    <div class="filter-options">
+                        <input type="number" placeholder="最小值">
+                        <input type="number" placeholder="最大值">
+                        <button class="apply-filter">应用</button>
+                    </div>
+                </th>
+                <th>
+                    超额最大回撤
+                    <button class="filter-btn"><i class="gear-icon"></i></button>
+                    <div class="filter-options">
+                        <input type="number" placeholder="最小值">
+                        <input type="number" placeholder="最大值">
+                        <button class="apply-filter">应用</button>
+                    </div>
+                </th>
+                <th>
+                    夏普比率
+                    <button class="filter-btn"><i class="gear-icon"></i></button>
+                    <div class="filter-options">
+                        <input type="number" placeholder="最小值">
+                        <input type="number" placeholder="最大值">
+                        <button class="apply-filter">应用</button>
+                    </div>
+                </th>
+                <th>
+                    卡玛比率
+                    <button class="filter-btn"><i class="gear-icon"></i></button>
+                    <div class="filter-options">
+                        <input type="number" placeholder="最小值">
+                        <input type="number" placeholder="最大值">
+                        <button class="apply-filter">应用</button>
+                    </div>
+                </th>
+                <th>
+                    年双边换手率
                     <button class="filter-btn"><i class="gear-icon"></i></button>
                     <div class="filter-options">
                         <input type="number" placeholder="最小值">

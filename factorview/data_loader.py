@@ -2,64 +2,134 @@ import pandas as pd
 from quantfactor import FactorManagerAll, p
 
 
-def get_factor_statistics(factor_names: list[str]):
-    """
-    根据因子名称列表获取对应的统计值。
-
-    参数:
-    factor_names (list): 因子名称列表。
-
-    返回:
-    pd.DataFrame: 包含因子统计值的DataFrame, 索引为factor_name。
-    """
-    ic_df = (
-        FactorManagerAll.get_perf_factor(
-            perf_type="ic", factor_names=factor_names, fields="corr", is_cache=True
-        )["corr"]
-        .groupby("factor_name")
-        .mean()
-        .rename("ic")
+def get_factor_stats(
+    factor_names: list[str] = None,
+    start_date: str = None,
+    end_date: str = None,
+    pool: str = "all",
+    optimizer_index: str = "000905.SH",
+    benchmark_index: str = "000905.SH",
+    **kwargs,
+):
+    factor_info_df = FactorManagerAll.get_info_factor(
+        factor_names=factor_names,
+        query=[("factor_id != '8'"), ("status not in  ('invalid', 'highlyCorr')")],
+        is_cache=True,
     )
-    group_df = (
-        FactorManagerAll.get_perf_factor(
-            perf_type="group_pnl",
-            factor_names=factor_names,
-            fields="LS_Hedge",
-            is_cache=True,
-        )["LS_Hedge"]
-        .groupby("factor_name")
-        .apply(lambda x: p.annual_return(x.droplevel(["factor_name", "pool"])))
-        .rename("group_pnl")
+    if factor_info_df.empty:
+        factor_names = pd.Index([])
+    else:
+        factor_names = factor_info_df.index
+
+    ic_df = FactorManagerAll.get_perf_factor(
+        perf_type="ic",
+        factor_names=factor_names,
+        start_date=start_date,
+        end_date=end_date,
+        fields=["corr"],
+        index_col=["date", "factor_name"],
+        query=[("pool", pool)],
+        is_cache=True,
+        **kwargs,
     )
-    backtest_ret_df = (
-        FactorManagerAll.get_perf_factor(
-            perf_type="backtest_ret",
-            factor_names=factor_names,
-            fields="excess_ret",
-            query=[("optimizer_index", "000905.SH"), ("benchmark_index", "000905.SH")],
-            is_cache=True,
-        )["excess_ret"]
-        .groupby("factor_name")
-        .apply(
-            lambda x: p.annual_return(
-                x.droplevel(
-                    ["factor_name", "pool", "optimizer_index", "benchmark_index"]
-                )
+    if ic_df.empty:
+        ic_stats = pd.DataFrame(
+            index=pd.Index([], name="factor_name"), columns=["ic", "icir"]
+        ).reindex(factor_names)
+    else:
+        ic_stats = (
+            ic_df["corr"]
+            .groupby("factor_name")
+            .pipe(
+                lambda x: pd.concat(
+                    [
+                        x.mean().rename("ic"),
+                        (x.mean() / x.std()).rename("icir"),
+                    ],
+                    axis=1,
+                ).reindex(factor_names)
             )
         )
-        .rename("backtest_ret")
+
+    group_df = FactorManagerAll.get_perf_factor(
+        perf_type="group_pnl",
+        factor_names=factor_names,
+        start_date=start_date,
+        end_date=end_date,
+        fields=["Group_01", "Group_10", "LS_Hedge"],
+        index_col=["date", "factor_name"],
+        query=[("pool", pool)],
+        is_cache=True,
+        **kwargs,
     )
+    if group_df.empty:
+        group_stats = pd.DataFrame(
+            index=pd.Index([], name="factor_name"),
+            columns=["bottom_ret", "top_ret", "long_short_ret"],
+        ).reindex(factor_names)
+    else:
+        group_stats = (
+            group_df.groupby("factor_name")
+            .apply(lambda x: x.droplevel("factor_name").agg(p.annual_return))
+            .reindex(factor_names)
+            .rename(
+                columns={
+                    "Group_01": "bottom_ret",
+                    "Group_10": "top_ret",
+                    "LS_Hedge": "long_short_ret",
+                }
+            )
+        )
 
-    df = pd.concat([ic_df, group_df, backtest_ret_df], axis=1)
-    return df
+    backtest_df = FactorManagerAll.get_perf_factor(
+        perf_type="backtest_ret",
+        factor_names=factor_names,
+        start_date=start_date,
+        end_date=end_date,
+        fields=["excess_ret", "turnover"],
+        index_col=["date", "factor_name"],
+        query=[
+            ("pool", pool),
+            ("optimizer_index", optimizer_index),
+            ("benchmark_index", benchmark_index),
+        ],
+        is_cache=True,
+        **kwargs,
+    )
+    if backtest_df.empty:
+        backtest_stats = pd.DataFrame(
+            index=pd.Index([], name="factor_name"),
+            columns=[
+                "annual_return",
+                "max_drawdown",
+                "sharpe_ratio",
+                "calmar_ratio",
+                "turnover",
+            ],
+        ).reindex(factor_names)
+    else:
+        backtest_stats = backtest_df.groupby("factor_name").pipe(
+            lambda x: pd.concat(
+                [
+                    x["excess_ret"]
+                    .apply(
+                        lambda x: x.droplevel("factor_name").agg(
+                            [
+                                p.annual_return,
+                                p.max_drawdown,
+                                p.sharpe_ratio,
+                                p.calmar_ratio,
+                            ]
+                        )
+                    )
+                    .unstack(),
+                    x["turnover"].mean().mul(252),
+                ],
+                axis=1,
+            ).reindex(factor_names)
+        )
 
-
-def get_factor_info():
-    factor_info_df = FactorManagerAll.get_info_factor()
-    perf_df = get_factor_statistics(factor_info_df.index)
-    df = factor_info_df[["class_name"]].join(perf_df)
-
-    return df
+    return (factor_info_df, ic_stats, group_stats, backtest_stats)
 
 
 def get_factor_perf(factor_name: str):
