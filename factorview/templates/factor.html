@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>因子列表 - 因子分析系统</title>
+    <link rel="stylesheet" href="/static/css/factor.css">
+</head>
+
+<body>
+    <div class="header-container">
+        <h1>因子列表</h1>
+        <a href="/" class="btn">返回主页</a>
+        <div class="filter-section">
+        <div class="filter-group">
+            <label>股票池:</label>
+            <select id="pool-filter">
+                <option value="all" selected>全部</option>
+                <option value="000300.SH">沪深300</option>
+                <option value="000905.SH">中证500</option>
+                <option value="000852.SH">中证1000</option>
+                <option value="932000.CSI">中证2000</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label>回测区间:</label>
+            <select id="period-filter">
+                <option value="ytd">年初至今</option>
+                <option value="3m">近3个月</option>
+                <option value="1y" selected>近1年</option>
+                <option value="3y">近3年</option>
+                <option value="5y">近5年</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label>基准指数:</label>
+            <select id="benchmark-filter">
+                <option value="000905.SH" selected>中证500</option>
+                <option value="000300.SH">沪深300</option>
+                <option value="000852.SH">中证1000</option>
+                <option value="932000.CSI">中证2000</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label>优化基准:</label>
+            <select id="optimizer-filter">
+                <option value="000905.SH" selected>中证500</option>
+                <option value="000300.SH">沪深300</option>
+                <option value="000852.SH">中证1000</option>
+                <option value="932000.CSI">中证2000</option>
+                <option value="NA">NA</option>
+            </select>
+        </div>
+
+        <button id="apply-filters">应用筛选</button>
+    </div>
+
+    <table id="factors-table">
+        <thead>
+            <tr>
+                <th>因子名称</th>
+                <th>类型</th>
+                <th>IC</th>
+                <th>ICIR</th>
+                <th>TOP</th>
+                <th>BOTTON</th>
+                <th>多空</th>
+                <th>超额年化收益率</th>
+                <th>超额最大回撤</th>
+                <th>夏普比率</th>
+                <th>卡玛比率</th>
+                <th>年双边换手</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data will be populated here -->
+        </tbody>
+    </table>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/static/js/factor.js" type="module"></script>
+</body>
+
+</html>

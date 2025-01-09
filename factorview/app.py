@@ -38,8 +38,12 @@ def get_factors():
 
 
 @app.route("/")
-def index():
+def home():
     return render_template("index.html")
+
+@app.route("/factors")
+def factor_list():
+    return render_template("factor.html")
 
 
 @app.route("/factors/<factor_name>")
