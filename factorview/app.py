@@ -1,12 +1,12 @@
+import random
+
 import numpy as np
 import pandas as pd
 from flask import Flask, jsonify, render_template, request
 
-from factorview.data_loader import get_factor_stats, get_factor_perf
-from factorview.strategy_routes import init_strategy_routes
+from factorview.data_loader import get_factor_perf, get_factor_stats, get_strategy_info
 
 app = Flask(__name__, static_folder="static")
-init_strategy_routes(app)
 
 
 def clean_for_json(data):
@@ -43,13 +43,16 @@ def get_factors():
 def home():
     return render_template("index.html")
 
+
 @app.route("/factors")
 def factor_list():
     return render_template("factor.html")
 
+
 @app.route("/strategies")
 def strategy_list():
     return render_template("strategy.html")
+
 
 @app.route("/strategies/<int:strategy_id>")
 def strategy_detail(strategy_id):
@@ -77,6 +80,40 @@ def get_factor_performance(factor_name):
                 ["ic", "group", "backtest_ret"],
                 get_factor_perf(factor_name),
             )
+        }
+    )
+
+
+@app.route("/api/strategies")
+def get_strategies():
+    df = get_strategy_info(**request.args)
+    return jsonify(
+        {
+            "strategy_info": {
+                "values": clean_for_json(df),
+                "index": clean_for_json(df.index),
+            }
+        }
+    )
+
+
+@app.route("/api/strategies/<int:strategy_id>")
+def get_strategy_detail(strategy_id):
+    # 模拟策略详情数据
+    return jsonify(
+        {
+            "id": strategy_id,
+            "name": f"策略{strategy_id}",
+            "annual_return": random.uniform(5, 30),
+            "max_drawdown": random.uniform(5, 20),
+            "sharpe_ratio": random.uniform(0.5, 2.5),
+            "win_rate": random.uniform(40, 80),
+            "trade_count": random.randint(100, 1000),
+            "avg_holding_period": random.uniform(1, 30),
+            "performance": {
+                "labels": [f"Day {i}" for i in range(1, 31)],
+                "values": [random.uniform(90, 130) for _ in range(30)],
+            },
         }
     )
 

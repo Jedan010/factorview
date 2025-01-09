@@ -13,7 +13,7 @@ def get_factor_stats(
 ):
     factor_info_df = FactorManagerAll.get_info_factor(
         factor_names=factor_names,
-        query=[("factor_id != '8'"), ("status not in  ('invalid', 'highlyCorr')")],
+        query=[("status not in  ('invalid', 'highlyCorr')")],
         is_cache=True,
     )
     if factor_info_df.empty:
@@ -177,3 +177,7 @@ def get_factor_perf(factor_name: str):
     )
 
     return (ic_df, group_df, backtest_df)
+
+def get_strategy_info(**kwargs):
+    """取得策略信息"""
+    return FactorManagerAll.get_info_strategy()

@@ -3,8 +3,19 @@ document.addEventListener('DOMContentLoaded', function() {
     fetch(`/api/strategies/${strategyId}`)
         .then(response => response.json())
         .then(data => {
+            const strategyData = data.data.values;
+            
             // 更新策略名称
-            document.getElementById('strategy-name').textContent = data.name;
+            document.getElementById('strategy-name').textContent = strategyData.factor_name[0];
+            
+            // 更新基本信息
+            document.getElementById('strategy-factor-name').textContent = strategyData.factor_name[0];
+            document.getElementById('strategy-benchmark-index').textContent = strategyData.benchmark_index[0];
+            document.getElementById('strategy-optimizer-index').textContent = strategyData.optimizer_index[0];
+            document.getElementById('strategy-pool').textContent = strategyData.pool[0];
+            document.getElementById('strategy-status').textContent = strategyData.status[0];
+            document.getElementById('strategy-insert-time').textContent = strategyData.insert_time[0];
+            document.getElementById('strategy-update-time').textContent = strategyData.update_time[0];
 
             // 更新统计信息
             document.getElementById('annual-return').textContent = `${data.annual_return.toFixed(2)}%`;
