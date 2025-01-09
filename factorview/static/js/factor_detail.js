@@ -148,7 +148,10 @@ function plotCharts(data) {
         },
     });
 
-    // 更新绩效统计表
+    // 清空并更新绩效统计表
+    const groupStatsTable = document.getElementById('group-stats-table-container').querySelector('table tbody');
+    groupStatsTable.innerHTML = '';  // 清空表格
+    
     data.group.values[0].forEach((_, i) => {
         const groupReturns = data.group.values.map(v => v[i]);
         const perfStats = calcPerf(groupReturns);
@@ -220,7 +223,10 @@ function plotCharts(data) {
         }
     });
 
-    // 更新回测统计表
+    // 清空并更新回测统计表
+    const backtestStatsTable = document.getElementById('backtest-stats-table-container').querySelector('table tbody');
+    backtestStatsTable.innerHTML = '';  // 清空表格
+    
     backtest_names.forEach((name, i) => {
         const returns = data.backtest_ret.values.map(v => v[i]);
         const perfStats = calcPerf(returns);
