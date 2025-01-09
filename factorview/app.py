@@ -4,7 +4,7 @@ from flask import Flask, jsonify, render_template, request
 
 from factorview.data_loader import get_factor_stats, get_factor_perf
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 
 
 def clean_for_json(data):
