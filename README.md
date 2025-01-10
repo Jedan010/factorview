@@ -7,6 +7,8 @@ FactorView 是一个用于分析和可视化因子数据的Python Web应用。
 - 因子数据可视化
 - 因子相关性分析
 - 因子组合优化
+- 策略回测与绩效分析
+- 策略组合优化
 
 ## 项目结构
 ```
@@ -16,17 +18,23 @@ factorview/
 ├── data_loader.py
 ├── static/
 │   ├── css/
-│   │   ├── factor_detail.css
-│   │   ├── factor.css
-│   │   └── index.css
+│   │   ├── factor_info.css
+│   │   ├── factor_perf.css
+│   │   ├── index.css
+│   │   ├── strategy_info.css
+│   │   └── strategy_perf.css
 │   └── js/
-│       ├── factor_detail.js
-│       ├── factor.js
+│       ├── factor_info.js
+│       ├── factor_perf.js
+│       ├── strategy_info.js
+│       ├── strategy_perf.js
 │       └── utils.js
 ├── templates/
-│   ├── factor_detail.html
-│   ├── factor.html
-│   └── index.html
+│   ├── factor_info.html
+│   ├── factor_perf.html
+│   ├── index.html
+│   ├── strategy_info.html
+│   └── strategy_perf.html
 ```
 
 ## 安装
