@@ -1,90 +1,61 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block content %}
-<div class="container">
-    <h1 id="strategy-name"></h1>
-    
-    <div class="card mb-4">
-        <div class="card-header">策略基本信息</div>
-        <div class="card-body">
-            <table class="table">
-                <tr>
-                    <th>策略名称</th>
-                    <td id="strategy-factor-name"></td>
-                </tr>
-                <tr>
-                    <th>基准指数</th>
-                    <td id="strategy-benchmark-index"></td>
-                </tr>
-                <tr>
-                    <th>优化指数</th>
-                    <td id="strategy-optimizer-index"></td>
-                </tr>
-                <tr>
-                    <th>股票池</th>
-                    <td id="strategy-pool"></td>
-                </tr>
-                <tr>
-                    <th>状态</th>
-                    <td id="strategy-status"></td>
-                </tr>
-                <tr>
-                    <th>插入时间</th>
-                    <td id="strategy-insert-time"></td>
-                </tr>
-                <tr>
-                    <th>更新时间</th>
-                    <td id="strategy-update-time"></td>
-                </tr>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategy Performance</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/strategy_detail.css') }}">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+
+<body>
+    <!-- 返回策略列表按钮 -->
+    <div class="back-button-container">
+        <a href="/strategies" class="back-button">返回策略列表</a>
+    </div>
+
+    <h1>Strategy Performance: <span id="strategy-name"></span></h1>
+
+    <!-- 日期筛选输入框 -->
+    <div class="date-filter-container">
+        <label for="start-date">起始日期:</label>
+        <input type="date" id="start-date">
+        <label for="end-date">结束日期:</label>
+        <input type="date" id="end-date">
+        <button>筛选</button>
+    </div>
+
+    <div class="chart-and-stats-container" id="backtest-chart-container">
+        <div class="chart-container" id="backtest-chart"></div>
+
+        <!-- 回测统计表格 -->
+        <div class="stats-table-container" id="backtest-stats-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>策略名称</th>
+                        <th>收益类型</th>
+                        <th>累计收益率</th>
+                        <th>总年数</th>
+                        <th>年化收益率</th>
+                        <th>年化波动率</th>
+                        <th>最大回撤</th>
+                        <th>夏普比率</th>
+                        <th>卡玛比率</th>
+                        <th>平均持仓数</th>
+                        <th>年双边换手率</th>
+                        <th>年交易费</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 动态插入数据 -->
+                </tbody>
             </table>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">策略表现</div>
-                <div class="card-body">
-                    <canvas id="performance-chart"></canvas>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">策略统计</div>
-                <div class="card-body">
-                    <table class="table">
-                        <tr>
-                            <th>年化收益</th>
-                            <td id="annual-return"></td>
-                        </tr>
-                        <tr>
-                            <th>最大回撤</th>
-                            <td id="max-drawdown"></td>
-                        </tr>
-                        <tr>
-                            <th>夏普比率</th>
-                            <td id="sharpe-ratio"></td>
-                        </tr>
-                        <tr>
-                            <th>胜率</th>
-                            <td id="win-rate"></td>
-                        </tr>
-                        <tr>
-                            <th>交易次数</th>
-                            <td id="trade-count"></td>
-                        </tr>
-                        <tr>
-                            <th>平均持仓周期</th>
-                            <td id="avg-holding-period"></td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+    <script type="module" src="{{ url_for('static', filename='js/strategy_detail.js') }}"></script>
+</body>
 
-<script src="{{ url_for('static', filename='js/strategy_detail.js') }}"></script>
-{% endblock %}
+</html>

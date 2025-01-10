@@ -1,10 +1,13 @@
-import random
-
 import numpy as np
 import pandas as pd
 from flask import Flask, jsonify, render_template, request
 
-from factorview.data_loader import get_factor_perf, get_factor_stats, get_strategy_info
+from factorview.data_loader import (
+    get_factor_perf,
+    get_factor_stats,
+    get_strategy_info,
+    get_strategy_perf,
+)
 
 app = Flask(__name__, static_folder="static")
 
@@ -23,6 +26,31 @@ def clean_for_json(data):
     return data
 
 
+@app.route("/")
+def home():
+    return render_template("index.html")
+
+
+@app.route("/factors")
+def factor_list():
+    return render_template("factor.html")
+
+
+@app.route("/factors/<factor_name>")
+def factor_detail(factor_name):
+    return render_template("factor_detail.html", factor_name=factor_name)
+
+
+@app.route("/strategies")
+def strategy_list():
+    return render_template("strategy.html")
+
+
+@app.route("/strategies/<strategy_name>")
+def strategy_performance(strategy_name):
+    return render_template("strategy_detail.html", strategy_name=strategy_name)
+
+
 @app.route("/api/factors", methods=["GET"])
 def get_factors():
     return jsonify(
@@ -37,35 +65,6 @@ def get_factors():
             )
         }
     )
-
-
-@app.route("/")
-def home():
-    return render_template("index.html")
-
-
-@app.route("/factors")
-def factor_list():
-    return render_template("factor.html")
-
-
-@app.route("/strategies")
-def strategy_list():
-    return render_template("strategy.html")
-
-
-@app.route("/strategies/<int:strategy_id>")
-def strategy_detail(strategy_id):
-    return render_template("strategy_detail.html", strategy_id=strategy_id)
-
-
-@app.route("/factors/<factor_name>")
-def factor_detail(factor_name):
-    try:
-        return render_template("factor_detail.html", factor_name=factor_name)
-    except Exception as e:
-        app.logger.error(f"Error in factor_detail: {str(e)}")
-        return "Internal Server Error", 500
 
 
 @app.route("/api/factors/<factor_name>", methods=["GET"])
@@ -84,7 +83,7 @@ def get_factor_performance(factor_name):
     )
 
 
-@app.route("/api/strategies")
+@app.route("/api/strategies", methods=["GET"])
 def get_strategies():
     df = get_strategy_info(**request.args)
     return jsonify(
@@ -97,23 +96,16 @@ def get_strategies():
     )
 
 
-@app.route("/api/strategies/<int:strategy_id>")
-def get_strategy_detail(strategy_id):
+@app.route("/api/strategies/<strategy_name>", methods=["GET"])
+def get_strategy_performance(strategy_name):
     # 模拟策略详情数据
     return jsonify(
         {
-            "id": strategy_id,
-            "name": f"策略{strategy_id}",
-            "annual_return": random.uniform(5, 30),
-            "max_drawdown": random.uniform(5, 20),
-            "sharpe_ratio": random.uniform(0.5, 2.5),
-            "win_rate": random.uniform(40, 80),
-            "trade_count": random.randint(100, 1000),
-            "avg_holding_period": random.uniform(1, 30),
-            "performance": {
-                "labels": [f"Day {i}" for i in range(1, 31)],
-                "values": [random.uniform(90, 130) for _ in range(30)],
-            },
+            name: {
+                "values": clean_for_json(df.values),
+                "index": clean_for_json(df.index),
+            }
+            for name, df in zip(["backtest_ret"], get_strategy_perf(strategy_name))
         }
     )
 

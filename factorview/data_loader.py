@@ -13,7 +13,7 @@ def get_factor_stats(
 ):
     factor_info_df = FactorManagerAll.get_info_factor(
         factor_names=factor_names,
-        query=[("status not in  ('invalid', 'highlyCorr')")],
+        query=[("status not in  ('invalid', 'highlyCorr', 'tmp')")],
         is_cache=True,
     )
     if factor_info_df.empty:
@@ -178,6 +178,35 @@ def get_factor_perf(factor_name: str):
 
     return (ic_df, group_df, backtest_df)
 
+
 def get_strategy_info(**kwargs):
     """取得策略信息"""
     return FactorManagerAll.get_info_strategy()
+
+
+def get_strategy_perf(
+    strategy_name: str,
+    optimizer_index: str = "000905.SH",
+    benchmark_index: str = "000905.SH",
+    **kwargs,
+):
+    backtest_df = FactorManagerAll.get_perf_factor(
+        perf_type="backtest_ret",
+        factor_names=strategy_name,
+        index_col="date",
+        fields=[
+            "strategy_ret",
+            "index_ret",
+            "excess_ret",
+            "holding_num",
+            "turnover",
+            "transaction_fee",
+        ],
+        query=[
+            ("optimizer_index", optimizer_index),
+            ("benchmark_index", benchmark_index),
+        ],
+        is_cache=True,
+        **kwargs,
+    )
+    return (backtest_df,)
