@@ -140,27 +140,27 @@ applyFiltersBtn.addEventListener('click', fetchData);
 
 // 加载数据
 function fetchData() {
-        const strategyName = window.location.pathname.split('/').pop();
-        const queryParams = new URLSearchParams({
-            pool: filters.pool,
-            start_date: filters.start_date || '',
-            end_date: filters.end_date || '',
-            benchmark_index: filters.benchmark_index || '',
-            optimizer_index: filters.optimizer_index || ''
+    const strategyName = window.location.pathname.split('/').pop();
+    const queryParams = new URLSearchParams({
+        pool: filters.pool,
+        start_date: filters.start_date || '',
+        end_date: filters.end_date || '',
+        benchmark_index: filters.benchmark_index || '',
+        optimizer_index: filters.optimizer_index || ''
+    });
+
+    fetch(`/api/strategy/${strategyName}?${queryParams.toString()}`)
+        .then(response => response.json())
+        .then(strategy => {
+            plotCharts(strategy);
         });
 
-        fetch(`/api/strategy/${strategyName}?${queryParams.toString()}`)
+    fetch(`/api/strategy/${strategyName}/factors?${queryParams.toString()}`)
         .then(response => response.json())
-            .then(strategy => {
-                plotCharts(strategy);
-            });
-
-        fetch(`/api/strategy/${strategyName}/factors?${queryParams.toString()}`)
-        .then(response => response.json())
-            .then(factor => {
-                renderTable(factor);
-                initSorting();
-            });
+        .then(factor => {
+            renderTable(factor);
+            
+        });
 
 }
 
@@ -273,116 +273,22 @@ function plotCharts(data) {
         `;
         document.getElementById('backtest-stats-table-container').querySelector('table tbody').appendChild(row);
     });
-
-    // 获取并渲染因子表现数据
-    fetch(`/api/strategy/${strategyName}/factors`)
-        .then(response => response.json())
-        .then(factorData => {
-            const factorTable = document.getElementById('factor-table').querySelector('tbody');
-            factorTable.innerHTML = '';  // 清空表格
-
-            // 渲染因子表现表格
-            function renderFactorTable(factor) {
-                const factorTable = document.getElementById('factor-table').querySelector('tbody');
-                factorTable.innerHTML = '';  // 清空表格
-
-                for (let i = 0; i < factor.factor_info.index.length; i++) {
-                    const factorName = factor.factor_info.index[i];
-                    const row = document.createElement('tr');
-
-                    // 因子名称
-                    const linkCell = document.createElement('td');
-                    const link = document.createElement('a');
-                    link.href = `/factor/${factorName}`;
-                    link.className = 'factor-link';
-                    link.dataset.factor = factor.factor_info.index;
-                    link.textContent = factorName;
-                    linkCell.appendChild(link);
-
-                    row.appendChild(linkCell);
-
-                    // 因子类别
-                    row.appendChild(createCell(factor.factor_info.values.class_name[i]));
-
-                    // IC相关
-                    row.appendChild(createCell(factor.ic.values.ic[i], { isNum: true, decimalPlaces: 3 }));
-                    row.appendChild(createCell(factor.ic.values.icir[i], { isNum: true, decimalPlaces: 3 }));
-
-                    // 分组收益
-                    row.appendChild(createCell(factor.group.values.top_ret[i], { isNum: true, isPercent: true }));
-                    row.appendChild(createCell(factor.group.values.bottom_ret[i], { isNum: true, isPercent: true }));
-                    row.appendChild(createCell(factor.group.values.long_short_ret[i], { isNum: true, isPercent: true }));
-
-                    // 回测表现
-                    row.appendChild(createCell(factor.backtest_ret.values.annual_return[i], { isNum: true, isPercent: true }));
-                    row.appendChild(createCell(factor.backtest_ret.values.max_drawdown[i], { isNum: true, isPercent: true }));
-                    row.appendChild(createCell(factor.backtest_ret.values.sharpe_ratio[i], { isNum: true }));
-                    row.appendChild(createCell(factor.backtest_ret.values.calmar_ratio[i], { isNum: true }));
-                    row.appendChild(createCell(factor.backtest_ret.values.turnover[i], { isNum: true, decimalPlaces: 1 }));
-
-                    factorTable.appendChild(row);
-                }
-
-                // 渲染完成后初始化排序
-                initSorting(factorTable);
-            }
-
-            // 初始化排序功能
-            function initSorting(table) {
-                // 确保表格已渲染
-                setTimeout(() => {
-                    const headers = table.parentElement.querySelectorAll('th');
-
-                    // 先移除所有已有的排序按钮
-                    headers.forEach(header => {
-                        const existingBtn = header.querySelector('.sort-btn');
-                        if (existingBtn) {
-                            header.removeChild(existingBtn);
-                        }
-                    });
-
-                    // 添加新的排序按钮
-                    headers.forEach((header, index) => {
-                        // 检查是否已经存在排序按钮
-                        if (!header.querySelector('.sort-btn')) {
-                            const sortBtn = document.createElement('span');
-                            sortBtn.className = 'sort-btn';
-                            sortBtn.innerHTML = '⇅';
-                            header.insertAdjacentHTML('beforeend', '&nbsp;');
-                            header.appendChild(sortBtn);
-
-                            // 点击排序按钮排序
-                            sortBtn.addEventListener('click', () => {
-                                try {
-                                    const isAscending = table.getAttribute('data-sort') === 'asc';
-                                    sortTable(table, index, {
-                                        order: isAscending ? 'asc' : 'desc',
-                                        dataType: 'auto'
-                                    });
-                                    table.setAttribute('data-sort', isAscending ? 'desc' : 'asc');
-
-                                    // 更新按钮状态
-                                    headers.forEach(h => h.querySelector('.sort-btn')?.removeAttribute('data-active'));
-                                    sortBtn.setAttribute('data-active', 'true');
-                                } catch (error) {
-                                    console.error('排序失败:', error);
-                                    alert('排序失败，请稍后重试');
-                                }
-                            });
-                        }
-                    });
-                }, 0);
-            }
-
-            // 渲染表格
-            renderFactorTable(factorData);
-        })
 }
 
 
 function renderTable(factor) {
-    const tbody = document.getElementById('factor-table').querySelector('tbody');
+    const table = document.getElementById('factor-table');
+    const tbody = table.querySelector('tbody');
     tbody.setAttribute('data-sort', 'asc');
+
+    // Clear existing sort buttons
+    const headers = table.querySelectorAll('th');
+    headers.forEach(header => {
+        const existingBtn = header.querySelector('.sort-btn');
+        if (existingBtn) {
+            header.removeChild(existingBtn);
+        }
+    });
 
     tbody.innerHTML = '';
 
@@ -416,11 +322,14 @@ function renderTable(factor) {
         tbody.appendChild(row);
     }
 
+    initSorting();
+
 };
 
 
 function initSorting() {
-    const table = document.getElementById('factor-table').querySelector('tbody');
+    const table = document.getElementById('factor-table');
+    const tbody = table.querySelector('tbody');
 
     const headers = table.querySelectorAll('th');
     headers.forEach((header, index) => {
@@ -432,18 +341,19 @@ function initSorting() {
 
         // 点击排序按钮排序
         sortBtn.addEventListener('click', () => {
-            const isAscending = table.getAttribute('data-sort') === 'asc';
+            const isAscending = tbody.getAttribute('data-sort') === 'asc';
             sortTable(table, index, {
                 order: isAscending ? 'asc' : 'desc',
                 dataType: 'auto'
             });
-            table.setAttribute('data-sort', isAscending ? 'desc' : 'asc');
+            tbody.setAttribute('data-sort', isAscending ? 'desc' : 'asc');
+            
+            // 更新表头样式
+            headers.forEach(h => h.classList.remove('sorted-asc', 'sorted-desc'));
+            header.classList.add(isAscending ? 'sorted-desc' : 'sorted-asc');
         });
     });
 };
 
 // Initial data load
 fetchData();
-
-// Initialize sorting after data loads
-initSorting();
