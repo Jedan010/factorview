@@ -2,7 +2,7 @@ import pandas as pd
 from quantfactor import FactorManagerAll, p
 
 
-def get_factor_stats(
+def load_factor_stats(
     factor_names: list[str] = None,
     start_date: str = None,
     end_date: str = None,
@@ -132,7 +132,7 @@ def get_factor_stats(
     return (factor_info_df, ic_stats, group_stats, backtest_stats)
 
 
-def get_factor_perf(factor_name: str):
+def load_factor_perf(factor_name: str):
     ic_df = FactorManagerAll.get_perf_factor(
         perf_type="ic",
         factor_names=factor_name,
@@ -179,12 +179,12 @@ def get_factor_perf(factor_name: str):
     return (ic_df, group_df, backtest_df)
 
 
-def get_strategy_info(**kwargs):
+def load_strategy_info(**kwargs):
     """取得策略信息"""
     return FactorManagerAll.get_info_strategy()
 
 
-def get_strategy_perf(
+def load_strategy_perf(
     strategy_name: str,
     optimizer_index: str = "000905.SH",
     benchmark_index: str = "000905.SH",

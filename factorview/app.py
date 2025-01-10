@@ -3,10 +3,10 @@ import pandas as pd
 from flask import Flask, jsonify, render_template, request
 
 from factorview.data_loader import (
-    get_factor_perf,
-    get_factor_stats,
-    get_strategy_info,
-    get_strategy_perf,
+    load_factor_perf,
+    load_factor_stats,
+    load_strategy_info,
+    load_strategy_perf,
 )
 
 app = Flask(__name__, static_folder="static")
@@ -31,28 +31,28 @@ def home():
     return render_template("index.html")
 
 
-@app.route("/factors")
-def factor_list():
-    return render_template("factor.html")
+@app.route("/factor")
+def factor_info():
+    return render_template("factor_info.html")
 
 
-@app.route("/factors/<factor_name>")
-def factor_detail(factor_name):
-    return render_template("factor_detail.html", factor_name=factor_name)
+@app.route("/factor/<factor_name>")
+def factor_perf(factor_name):
+    return render_template("factor_perf.html", factor_name=factor_name)
 
 
-@app.route("/strategies")
-def strategy_list():
-    return render_template("strategy.html")
+@app.route("/strategy")
+def strategy_info():
+    return render_template("strategy_info.html")
 
 
-@app.route("/strategies/<strategy_name>")
-def strategy_performance(strategy_name):
-    return render_template("strategy_detail.html", strategy_name=strategy_name)
+@app.route("/strategy/<strategy_name>")
+def strategy_perf(strategy_name):
+    return render_template("strategy_perf.html", strategy_name=strategy_name)
 
 
-@app.route("/api/factors", methods=["GET"])
-def get_factors():
+@app.route("/api/factor", methods=["GET"])
+def get_factor_info():
     return jsonify(
         {
             name: {
@@ -61,13 +61,13 @@ def get_factors():
             }
             for name, df in zip(
                 ["factor_info", "ic", "group", "backtest_ret"],
-                get_factor_stats(**request.args),
+                load_factor_stats(**request.args),
             )
         }
     )
 
 
-@app.route("/api/factors/<factor_name>", methods=["GET"])
+@app.route("/api/factor/<factor_name>", methods=["GET"])
 def get_factor_performance(factor_name):
     return jsonify(
         {
@@ -77,15 +77,15 @@ def get_factor_performance(factor_name):
             }
             for name, df in zip(
                 ["ic", "group", "backtest_ret"],
-                get_factor_perf(factor_name),
+                load_factor_perf(factor_name),
             )
         }
     )
 
 
-@app.route("/api/strategies", methods=["GET"])
-def get_strategies():
-    df = get_strategy_info(**request.args)
+@app.route("/api/strategy", methods=["GET"])
+def get_strategy_info():
+    df = load_strategy_info(**request.args)
     return jsonify(
         {
             "strategy_info": {
@@ -96,8 +96,8 @@ def get_strategies():
     )
 
 
-@app.route("/api/strategies/<strategy_name>", methods=["GET"])
-def get_strategy_performance(strategy_name):
+@app.route("/api/strategy/<strategy_name>", methods=["GET"])
+def get_strategy_perf(strategy_name):
     # 模拟策略详情数据
     return jsonify(
         {
@@ -105,7 +105,7 @@ def get_strategy_performance(strategy_name):
                 "values": clean_for_json(df.values),
                 "index": clean_for_json(df.index),
             }
-            for name, df in zip(["backtest_ret"], get_strategy_perf(strategy_name))
+            for name, df in zip(["backtest_ret"], load_strategy_perf(strategy_name))
         }
     )
 

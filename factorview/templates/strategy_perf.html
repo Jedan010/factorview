@@ -5,14 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Strategy Performance</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/strategy_detail.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/strategy_perf.css') }}">
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 
 <body>
     <!-- 返回策略列表按钮 -->
     <div class="back-button-container">
-        <a href="/strategies" class="back-button">返回策略列表</a>
+        <a href="/strategy" class="back-button">返回策略列表</a>
     </div>
 
     <h1>Strategy Performance: <span id="strategy-name"></span></h1>
@@ -55,7 +55,7 @@
         </div>
     </div>
 
-    <script type="module" src="{{ url_for('static', filename='js/strategy_detail.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/strategy_perf.js') }}"></script>
 </body>
 
 </html>

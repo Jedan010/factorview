@@ -5,7 +5,7 @@ function filterData() {
     const factorName = window.location.pathname.split('/').pop();
     const startDate = document.getElementById('start-date').value;
     const endDate = document.getElementById('end-date').value;
-    fetch(`/api/factors/${factorName}?start=${startDate}&end=${endDate}`)
+    fetch(`/api/factor/${factorName}?start=${startDate}&end=${endDate}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -286,7 +286,7 @@ document.querySelector('button').addEventListener('click', () => {
     filterData();
 });
 
-fetch(`/api/factors/${factorName}`)
+fetch(`/api/factor/${factorName}`)
     .then(response => {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);

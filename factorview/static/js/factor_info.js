@@ -153,7 +153,7 @@ document.addEventListener('DOMContentLoaded', function () {
       optimizer_index: filters.optimizer_index || ''
     });
 
-    fetch(`/api/factors?${queryParams.toString()}`)
+    fetch(`/api/factor?${queryParams.toString()}`)
       .then(response => response.json())
       .then(data => {
         // 验证数据格式
@@ -198,7 +198,7 @@ document.addEventListener('DOMContentLoaded', function () {
       // 创建链接单元格
       const linkCell = document.createElement('td');
       const link = document.createElement('a');
-      link.href = `/factors/${factor.factor_info.index[i]}`;
+      link.href = `/factor/${factor.factor_info.index[i]}`;
       link.className = 'factor-link';
       link.dataset.factor = factor.factor_info.index;
       link.textContent = factor.factor_info.index[i];

@@ -5,14 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Factor Performance</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/factor_detail.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/factor_perf.css') }}">
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 
 <body>
     <!-- 返回因子列表按钮 -->
     <div class="back-button-container">
-        <a href="/factors" class="back-button">返回因子列表</a>
+        <a href="/factor" class="back-button">返回因子列表</a>
     </div>
 
     <h1>Factor Performance: <span id="factor-name"></span></h1>
@@ -110,7 +110,7 @@
         </div>
     </div>
 
-    <script type="module" src="{{ url_for('static', filename='js/factor_detail.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/factor_perf.js') }}"></script>
 </body>
 
 </html>

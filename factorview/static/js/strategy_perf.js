@@ -5,7 +5,7 @@ function filterData() {
     const strategyName = window.location.pathname.split('/').pop();
     const startDate = document.getElementById('start-date').value;
     const endDate = document.getElementById('end-date').value;
-    fetch(`/api/strategies/${strategyName}?start=${startDate}&end=${endDate}`)
+    fetch(`/api/strategy/${strategyName}?start=${startDate}&end=${endDate}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -159,7 +159,7 @@ document.querySelector('button').addEventListener('click', () => {
     filterData();
 });
 
-fetch(`/api/strategies/${strategyName}`)
+fetch(`/api/strategy/${strategyName}`)
     .then(response => {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);

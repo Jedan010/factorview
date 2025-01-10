@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
       optimizer_index: filters.optimizer_index || ''
     });
 
-    fetch(`/api/strategies?${queryParams.toString()}`)
+    fetch(`/api/strategy?${queryParams.toString()}`)
       .then(response => response.json())
       .then(response => {
         console.log('API Response:', response); // Debug logging
@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function () {
       // 创建链接单元格
       const linkCell = document.createElement('td');
       const link = document.createElement('a');
-      link.href = `/strategies/${strategy.index[i]}`;
+      link.href = `/strategy/${strategy.index[i]}`;
       link.className = 'strategy-link';
       link.textContent = strategy.index[i];
       linkCell.appendChild(link);
