@@ -128,8 +128,60 @@ h1 {
     background-color: #ffe0e0;
 }
 
+/* 因子表现表格样式 */
+.factor-table-container {
+    width: 95%;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.factor-table-container h2 {
+    color: #1a73e8;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    font-weight: 500;
+}
+
+#factor-performance-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+#factor-performance-table th,
+#factor-performance-table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+#factor-performance-table th {
+    background-color: #f8f9fa;
+    color: #1a73e8;
+    font-weight: 600;
+}
+
+#factor-performance-table td:nth-child(2) {
+    text-align: left;
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#factor-performance-table tr:hover {
+    background-color: rgba(26, 115, 232, 0.05);
+}
+
 @media (max-width: 768px) {
     .stats-table-container {
+        width: 90%;
+        overflow-x: auto;
+    }
+    
+    .factor-table-container {
         width: 90%;
         overflow-x: auto;
     }

@@ -1,4 +1,4 @@
-import { filterByDate, calcNav, calcDrawdown, calcPerf } from './utils.js';
+import { filterByDate, calcNav, calcDrawdown, calcPerf, createCell, sortTable } from './utils.js';
 
 // 数据筛选函数
 function filterData() {
@@ -99,7 +99,7 @@ function plotCharts(data) {
     // 清空并更新回测统计表
     const backtestStatsTable = document.getElementById('backtest-stats-table-container').querySelector('table tbody');
     backtestStatsTable.innerHTML = '';  // 清空表格
-    
+
     backtest_names.forEach((name, i) => {
         const returns = data.backtest_ret.values.map(v => v[i]);
         const perfStats = calcPerf(returns);
@@ -108,12 +108,12 @@ function plotCharts(data) {
         const firstDate = new Date(data.backtest_ret.index[0]);
         const lastDate = new Date(data.backtest_ret.index[data.backtest_ret.index.length - 1]);
         const totalYears = (lastDate - firstDate) / (1000 * 60 * 60 * 24 * 365);
-        
+
         // 计算新增指标
         const positions = data.backtest_ret.values.map(v => v[v.length - 3]); // 持仓数
         const turnovers = data.backtest_ret.values.map(v => v[v.length - 2]); // 换手率
         const fees = data.backtest_ret.values.map(v => v[v.length - 1]); // 交易费率
-        
+
         const avgPosition = positions.reduce((a, b) => a + b, 0) / positions.length;
         const annualTurnover = turnovers.reduce((a, b) => a + b, 0) / totalYears;
         const annualFee = fees.reduce((a, b) => a + b, 0) / totalYears;
@@ -139,6 +139,84 @@ function plotCharts(data) {
         `;
         document.getElementById('backtest-stats-table-container').querySelector('table tbody').appendChild(row);
     });
+
+    // 获取并渲染因子表现数据
+    fetch(`/api/strategy/${strategyName}/factors`)
+        .then(response => response.json())
+        .then(factorData => {
+            const factorTable = document.getElementById('factor-performance-table').querySelector('tbody');
+            factorTable.innerHTML = '';  // 清空表格
+
+            // 渲染因子表现表格
+            function renderFactorTable(factor) {
+                const factorTable = document.getElementById('factor-performance-table').querySelector('tbody');
+                factorTable.innerHTML = '';  // 清空表格
+
+                for (let i = 0; i < factor.factor_info.index.length; i++) {
+                    const factorName = factor.factor_info.index[i];
+                    const row = document.createElement('tr');
+
+                    // 因子名称
+                    const linkCell = document.createElement('td');
+                    const link = document.createElement('a');
+                    link.href = `/factor/${factorName}`;
+                    link.className = 'factor-link';
+                    link.dataset.factor = factor.factor_info.index;
+                    link.textContent = factorName;
+                    linkCell.appendChild(link);
+
+                    row.appendChild(linkCell);
+
+                    // 因子类别
+                    row.appendChild(createCell(factor.factor_info.values.class_name[i]));
+
+                    // IC相关
+                    row.appendChild(createCell(factor.ic.values.ic[i], { isNum: true, decimalPlaces: 3 }));
+                    row.appendChild(createCell(factor.ic.values.icir[i], { isNum: true, decimalPlaces: 3 }));
+
+                    // 分组收益
+                    row.appendChild(createCell(factor.group.values.top_ret[i], { isNum: true, isPercent: true }));
+                    row.appendChild(createCell(factor.group.values.bottom_ret[i], { isNum: true, isPercent: true }));
+                    row.appendChild(createCell(factor.group.values.long_short_ret[i], { isNum: true, isPercent: true }));
+
+                    // 回测表现
+                    row.appendChild(createCell(factor.backtest_ret.values.annual_return[i], { isNum: true, isPercent: true }));
+                    row.appendChild(createCell(factor.backtest_ret.values.max_drawdown[i], { isNum: true, isPercent: true }));
+                    row.appendChild(createCell(factor.backtest_ret.values.sharpe_ratio[i], { isNum: true }));
+                    row.appendChild(createCell(factor.backtest_ret.values.calmar_ratio[i], { isNum: true }));
+                    row.appendChild(createCell(factor.backtest_ret.values.turnover[i], { isNum: true, decimalPlaces: 1 }));
+
+                    factorTable.appendChild(row);
+                }
+
+                // 初始化排序功能
+                initSorting(factorTable);
+            }
+
+            // 初始化排序功能
+            function initSorting(table) {
+                const headers = table.parentElement.querySelectorAll('th');
+                headers.forEach((header, index) => {
+                    // 添加排序按钮
+                    const sortBtn = document.createElement('div');
+                    sortBtn.className = 'sort-btn';
+                    sortBtn.innerHTML = '⇅';
+                    header.appendChild(sortBtn);
+
+                    // 点击排序按钮排序
+                    sortBtn.addEventListener('click', () => {
+                        const isAscending = table.getAttribute('data-sort') === 'asc';
+                        sortTable(table, index, {
+                            order: isAscending ? 'asc' : 'desc',
+                            dataType: 'auto'
+                        });
+                        table.setAttribute('data-sort', isAscending ? 'desc' : 'asc');
+                    });
+                });
+            }
+
+            renderFactorTable(factorData);
+        })
 }
 
 // 页面加载时获取数据并设置事件监听

@@ -5,6 +5,7 @@ from flask import Flask, jsonify, render_template, request
 from factorview.data_loader import (
     load_factor_perf,
     load_factor_stats,
+    load_strategy_factor_stats,
     load_strategy_info,
     load_strategy_perf,
 )
@@ -53,6 +54,7 @@ def strategy_perf(strategy_name):
 
 @app.route("/api/factor", methods=["GET"])
 def get_factor_info():
+    factor_stats = load_factor_stats(**request.args)
     return jsonify(
         {
             name: {
@@ -60,8 +62,7 @@ def get_factor_info():
                 "index": clean_for_json(df.index),
             }
             for name, df in zip(
-                ["factor_info", "ic", "group", "backtest_ret"],
-                load_factor_stats(**request.args),
+                ["factor_info", "ic", "group", "backtest_ret"], factor_stats
             )
         }
     )
@@ -69,16 +70,14 @@ def get_factor_info():
 
 @app.route("/api/factor/<factor_name>", methods=["GET"])
 def get_factor_performance(factor_name):
+    factor_perf = load_factor_perf(factor_name)
     return jsonify(
         {
             name: {
                 "values": clean_for_json(df.values),
                 "index": clean_for_json(df.index),
             }
-            for name, df in zip(
-                ["ic", "group", "backtest_ret"],
-                load_factor_perf(factor_name),
-            )
+            for name, df in zip(["ic", "group", "backtest_ret"], factor_perf)
         }
     )
 
@@ -98,14 +97,29 @@ def get_strategy_info():
 
 @app.route("/api/strategy/<strategy_name>", methods=["GET"])
 def get_strategy_perf(strategy_name):
-    # 模拟策略详情数据
+    (backtest_df,) = load_strategy_perf(strategy_name, **request.args)
+    return jsonify(
+        {
+            "backtest_ret": {
+                "values": clean_for_json(backtest_df.values),
+                "index": clean_for_json(backtest_df.index),
+            },
+        }
+    )
+
+
+@app.route("/api/strategy/<strategy_name>/factors", methods=["GET"])
+def get_strategy_factors(strategy_name):
+    factor_stats = load_strategy_factor_stats(strategy_name, **request.args)
     return jsonify(
         {
             name: {
-                "values": clean_for_json(df.values),
+                "values": clean_for_json(df),
                 "index": clean_for_json(df.index),
             }
-            for name, df in zip(["backtest_ret"], load_strategy_perf(strategy_name))
+            for name, df in zip(
+                ["factor_info", "ic", "group", "backtest_ret"], factor_stats
+            )
         }
     )
 

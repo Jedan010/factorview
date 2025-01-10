@@ -179,13 +179,25 @@ def load_factor_perf(factor_name: str):
     return (ic_df, group_df, backtest_df)
 
 
-def load_strategy_info(**kwargs):
+def load_strategy_info(
+    pool: str = "all",
+    optimizer_index: str = "000905.SH",
+    benchmark_index: str = "000905.SH",
+    **kwargs,
+):
     """取得策略信息"""
-    return FactorManagerAll.get_info_strategy()
+    return FactorManagerAll.get_info_strategy(
+        pools=pool,
+        optimizer_indexs=optimizer_index,
+        benchmark_indexs=benchmark_index,
+        **kwargs,
+    )
 
 
 def load_strategy_perf(
     strategy_name: str,
+    start_date: str = None,
+    end_date: str = None,
     optimizer_index: str = "000905.SH",
     benchmark_index: str = "000905.SH",
     **kwargs,
@@ -193,6 +205,8 @@ def load_strategy_perf(
     backtest_df = FactorManagerAll.get_perf_factor(
         perf_type="backtest_ret",
         factor_names=strategy_name,
+        start_date=start_date,
+        end_date=end_date,
         index_col="date",
         fields=[
             "strategy_ret",
@@ -209,4 +223,46 @@ def load_strategy_perf(
         is_cache=True,
         **kwargs,
     )
+    if backtest_df.empty:
+        backtest_df = pd.DataFrame(
+            index=pd.Index([], name="date"),
+            columns=[
+                "strategy_ret",
+                "index_ret",
+                "excess_ret",
+                "holding_num",
+                "turnover",
+                "transaction_fee",
+            ],
+        )
+
     return (backtest_df,)
+
+
+def load_strategy_factor_stats(
+    strategy_name: str,
+    start_date: str = None,
+    end_date: str = None,
+    pool: str = "all",
+    optimizer_index: str = "000905.SH",
+    benchmark_index: str = "000905.SH",
+    **kwargs,
+):
+    strategy_info = FactorManagerAll.get_info_strategy(strategy_names=strategy_name)
+    if strategy_info.empty:
+        raise ValueError(f"策略 {strategy_name} 不存在")
+    strategy_info = strategy_info.iloc[0]
+    combine_name = strategy_info["factor_name"]
+    factor_names = FactorManagerAll.get_source_factors(
+        combine_name, is_return_list=True
+    )
+    factor_stats_df = load_factor_stats(
+        factor_names=factor_names,
+        start_date=start_date,
+        end_date=end_date,
+        pool=pool,
+        optimizer_index=optimizer_index,
+        benchmark_index=benchmark_index,
+        **kwargs,
+    )
+    return factor_stats_df

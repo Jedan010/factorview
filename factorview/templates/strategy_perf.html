@@ -55,6 +55,32 @@
         </div>
     </div>
 
+    <!-- 因子表现表格 -->
+    <div class="factor-table-container">
+        <h2>因子表现</h2>
+        <table id="factor-performance-table">
+            <thead>
+                <tr>
+                    <th>因子名称</th>
+                    <th>类型</th>
+                    <th>IC</th>
+                    <th>ICIR</th>
+                    <th>TOP</th>
+                    <th>BOTTON</th>
+                    <th>多空</th>
+                    <th>超额年化收益率</th>
+                    <th>超额最大回撤</th>
+                    <th>夏普比率</th>
+                    <th>卡玛比率</th>
+                    <th>年双边换手</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 动态插入数据 -->
+            </tbody>
+        </table>
+    </div>
+
     <script type="module" src="{{ url_for('static', filename='js/strategy_perf.js') }}"></script>
 </body>
 
