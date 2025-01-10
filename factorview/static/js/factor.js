@@ -1,5 +1,5 @@
 // 导入工具函数
-import { getDateRange, sortTable } from './utils.js';
+import { getDateRange, sortTable, createCell } from './utils.js';
 
 // 因子表功能
 document.addEventListener('DOMContentLoaded', function () {
@@ -27,32 +27,32 @@ document.addEventListener('DOMContentLoaded', function () {
   // 筛选器配置
   const filterConfig = {
     pool: [
-      {value: 'all', text: '全部', selected: true},
-      {value: '000300.SH', text: '沪深300'},
-      {value: '000905.SH', text: '中证500'},
-      {value: '000852.SH', text: '中证1000'},
-      {value: '932000.CSI', text: '中证2000'}
+      { value: 'all', text: '全部', selected: true },
+      { value: '000300.SH', text: '沪深300' },
+      { value: '000905.SH', text: '中证500' },
+      { value: '000852.SH', text: '中证1000' },
+      { value: '932000.CSI', text: '中证2000' }
     ],
     period: [
-      {value: 'all', text: '全部', selected: true},
-      {value: 'ytd', text: '年初至今'},
-      {value: '3m', text: '近3个月'},
-      {value: '1y', text: '近1年'},
-      {value: '3y', text: '近3年'},
-      {value: '5y', text: '近5年'}
+      { value: 'all', text: '全部', selected: true },
+      { value: 'ytd', text: '年初至今' },
+      { value: '3m', text: '近3个月' },
+      { value: '1y', text: '近1年' },
+      { value: '3y', text: '近3年' },
+      { value: '5y', text: '近5年' }
     ],
     benchmark: [
-      {value: '000905.SH', text: '中证500', selected: true},
-      {value: '000300.SH', text: '沪深300'},
-      {value: '000852.SH', text: '中证1000'},
-      {value: '932000.CSI', text: '中证2000'}
+      { value: '000905.SH', text: '中证500', selected: true },
+      { value: '000300.SH', text: '沪深300' },
+      { value: '000852.SH', text: '中证1000' },
+      { value: '932000.CSI', text: '中证2000' }
     ],
     optimizer: [
-      {value: '000905.SH', text: '中证500', selected: true},
-      {value: '000300.SH', text: '沪深300'},
-      {value: '000852.SH', text: '中证1000'},
-      {value: '932000.CSI', text: '中证2000'},
-      {value: 'NA', text: 'NA'}
+      { value: '000905.SH', text: '中证500', selected: true },
+      { value: '000300.SH', text: '沪深300' },
+      { value: '000852.SH', text: '中证1000' },
+      { value: '932000.CSI', text: '中证2000' },
+      { value: 'NA', text: 'NA' }
     ]
   };
 
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function generateFilter(containerId, options, labelText) {
     const container = document.getElementById(containerId);
     if (!container) return;
-    
+
     // 创建标签
     const label = document.createElement('label');
     label.textContent = labelText + ':';
@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // 创建选择框
     const select = document.createElement('select');
     select.id = containerId;
-    
+
     options.forEach(option => {
       const opt = document.createElement('option');
       opt.value = option.value;
@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
       select.appendChild(opt);
     });
-    
+
     container.appendChild(select);
   }
 
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
   generateFilter('period-filter', filterConfig.period, '时间周期');
   generateFilter('benchmark-filter', filterConfig.benchmark, '基准指数');
   generateFilter('optimizer-filter', filterConfig.optimizer, '优化器');
-  
+
   const applyFiltersBtn = document.getElementById('apply-filters');
 
   // 统一事件监听器
@@ -194,29 +194,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
       const row = document.createElement('tr');
 
-      // 使用工具函数创建单元格
-      const createCell = (value, options = {}) => {
-        const { isPercent = false, decimalPlaces = 2 } = options;
-        const cell = document.createElement('td');
-        
-        try {
-          if (value === null || value === undefined) {
-            cell.textContent = 'N/A';
-            return cell;
-          }
-          
-          const numValue = parseFloat(value);
-          cell.textContent = isPercent ?
-            `${(numValue * 100).toFixed(decimalPlaces)}%` :
-            numValue.toFixed(decimalPlaces);
-            
-        } catch (error) {
-          console.error('Error creating table cell:', error);
-          cell.textContent = 'Error';
-        }
-        
-        return cell;
-      };
 
       // 创建链接单元格
       const linkCell = document.createElement('td');
@@ -229,17 +206,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
       // 添加所有单元格
       row.appendChild(linkCell);
-      row.appendChild(createCell(factor.factor_info.values.class_name[i], false, 0));
-      row.appendChild(createCell(factor.ic.values.ic[i], false, 3));
-      row.appendChild(createCell(factor.ic.values.icir[i], false, 3));
-      row.appendChild(createCell(factor.group.values.top_ret[i], true));
-      row.appendChild(createCell(factor.group.values.bottom_ret[i], true));
-      row.appendChild(createCell(factor.group.values.long_short_ret[i], true));
-      row.appendChild(createCell(factor.backtest_ret.values.annual_return[i], true));
-      row.appendChild(createCell(factor.backtest_ret.values.max_drawdown[i], true));
-      row.appendChild(createCell(factor.backtest_ret.values.sharpe_ratio[i], false));
-      row.appendChild(createCell(factor.backtest_ret.values.calmar_ratio[i], false));
-      row.appendChild(createCell(factor.backtest_ret.values.turnover[i], false, 1));
+      row.appendChild(createCell(factor.factor_info.values.class_name[i]));
+      row.appendChild(createCell(factor.ic.values.ic[i], { isNum: true, decimalPlaces: 3 }));
+      row.appendChild(createCell(factor.ic.values.icir[i], { isNum: true, decimalPlaces: 3 }));
+      row.appendChild(createCell(factor.group.values.top_ret[i], { isNum: true, isPercent: true }));
+      row.appendChild(createCell(factor.group.values.bottom_ret[i], { isNum: true, isPercent: true }));
+      row.appendChild(createCell(factor.group.values.long_short_ret[i], { isNum: true, isPercent: true }));
+      row.appendChild(createCell(factor.backtest_ret.values.annual_return[i], { isNum: true, isPercent: true }));
+      row.appendChild(createCell(factor.backtest_ret.values.max_drawdown[i], { isNum: true, isPercent: true }));
+      row.appendChild(createCell(factor.backtest_ret.values.sharpe_ratio[i], { isNum: true }));
+      row.appendChild(createCell(factor.backtest_ret.values.calmar_ratio[i], { isNum: true }));
+      row.appendChild(createCell(factor.backtest_ret.values.turnover[i], { isNum: true, decimalPlaces: 1 }));
 
       tbody.appendChild(row);
     }

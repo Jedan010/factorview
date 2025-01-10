@@ -1,5 +1,5 @@
 // 导入工具函数
-import { getDateRange, sortTable } from './utils.js';
+import { getDateRange, sortTable, createCell } from './utils.js';
 
 // 策略表功能
 document.addEventListener('DOMContentLoaded', function () {
@@ -126,29 +126,6 @@ document.addEventListener('DOMContentLoaded', function () {
     for (let i = 0; i < strategy.index.length; i++) {
       const row = document.createElement('tr');
 
-      // 创建单元格
-      const createCell = (value, options = {}) => {
-        const { isNum = false, isPercent = false, decimalPlaces = 2 } = options;
-        const cell = document.createElement('td');
-
-        if (value === null || value === undefined) {
-          cell.textContent = 'N/A';
-          return cell;
-        }
-
-        if (isNum) {
-          const numValue = parseFloat(value);
-          cell.textContent = isPercent ?
-            `${(numValue * 100).toFixed(decimalPlaces)}%` :
-            numValue.toFixed(decimalPlaces);
-        }
-        else {
-          cell.textContent = value;
-        }
-
-
-        return cell;
-      };
 
       // 创建链接单元格
       const linkCell = document.createElement('td');
@@ -164,8 +141,8 @@ document.addEventListener('DOMContentLoaded', function () {
       row.appendChild(createCell(strategy.values.optimizer_index[i]));
       row.appendChild(createCell(strategy.values.pool[i]));
       row.appendChild(createCell(strategy.values.status[i]));
-      row.appendChild(createCell(strategy.values.insert_time[i]));
-      row.appendChild(createCell(strategy.values.update_time[i]));
+      row.appendChild(createCell(strategy.values.insert_time[i], { isDate: true }));
+      row.appendChild(createCell(strategy.values.update_time[i], { isDate: true }));
 
       tbody.appendChild(row);
     }

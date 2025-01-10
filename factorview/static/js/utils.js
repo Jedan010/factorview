@@ -264,6 +264,56 @@ function sortTable(table, column, options = {}) {
   headers[column].classList.add(order === 'asc' ? 'sorted-asc' : 'sorted-desc');
 }
 
+// 创建表格单元格
+function createCell(value, options = {}) {
+  const {
+    isNum = false,
+    isPercent = false,
+    isDate = false,
+    decimalPlaces = 2,
+    dateFormat = 'YYYY-MM-DD',
+    nullText = 'N/A'
+  } = options;
+
+  const cell = document.createElement('td');
+
+  // 处理空值
+  if (value === null || value === undefined) {
+    cell.textContent = nullText;
+    return cell;
+  }
+
+  // 处理日期
+  if (isDate) {
+    const date = new Date(value);
+    if (!isNaN(date)) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      cell.textContent = dateFormat
+        .replace('YYYY', year)
+        .replace('MM', month)
+        .replace('DD', day);
+      return cell;
+    }
+  }
+
+  // 处理数值
+  if (isNum) {
+    const numValue = parseFloat(value);
+    if (!isNaN(numValue)) {
+      cell.textContent = isPercent ?
+        `${(numValue * 100).toFixed(decimalPlaces)}%` :
+        numValue.toFixed(decimalPlaces);
+      return cell;
+    }
+  }
+
+  // 默认处理文本
+  cell.textContent = value;
+  return cell;
+}
+
 // 导出函数供其他模块使用
 export {
   calcNav,
@@ -277,5 +327,6 @@ export {
   calcCalmarRatio,
   calcPerf,
   getDateRange,
-  sortTable
+  sortTable,
+  createCell
 };
