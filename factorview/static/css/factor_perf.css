@@ -1,91 +1,71 @@
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: Arial, sans-serif;
     background-color: #f4f4f4;
     margin: 0;
     padding: 0;
-    color: #333;
+}
+
+.header-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 20vh;
+    padding-top: 40px;
+    position: relative;
 }
 
 h1 {
     text-align: center;
     color: #1a73e8;
-    margin-top: 50px;
-    margin-bottom: 50px;
     font-size: 2.5rem;
-    font-weight: 300;
+    font-weight: 500;
     letter-spacing: 1px;
 }
 
-.chart-container {
-    width: 95%;
-    height: 750px;
-    margin: 0 auto;
-    background-color: #fff;
-    box-shadow: none;
-    border-radius: 0;
-    margin-top: 20px;
-    margin-bottom: 0px;
-}
-
-.back-button-container {
-    position: absolute;
-    top: 150px;
-    left: 170px;
-}
 
 .back-button {
-    display: inline-block;
-    padding: 10px 20px;
+    display: flex;
+    padding: 8px 16px;
     background-color: #1a73e8;
-    color: #fff;
-    text-decoration: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
+    color: white;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background-color 0.3s;
 }
 
 .back-button:hover {
-    background-color: #1261c4;
+    background-color: #1557b0;
 }
 
 .date-filter-container {
     text-align: center;
-    margin: 40px 0 20px 0;
+    margin: 20px 0 20px 0;
     padding-top: 20px;
 }
 
-@media (max-width: 768px) {
-    .chart-container {
-        width: 80%;
-        height: 400px;
-        margin: 0 auto;
-    }
-}
 
-@media (max-width: 480px) {
-    .chart-container {
-        width: 95%;
-        height: 300px;
-        margin: 0 auto;
-    }
-}
-
-#ic-chart {
-    height: 600px;
-
-}
 
 /* 图表和统计表容器 */
 .chart-and-stats-container {
     display: flex;
     flex-direction: column;
-    width: 95%;
-    margin: 0px auto;
-    background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 80%;
     border-radius: 8px;
-    margin-top: 40px;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
+}
+
+.chart-container {
+    width: 100%;
+    height: 750px;
+    margin: 0 auto;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+#ic-chart {
+    height: 600px;
+
 }
 
 /* 因子统计表格样式 */
@@ -111,6 +91,18 @@ h1 {
     padding: 12px;
     border: none;
     border-bottom: 1px solid #ddd;
+}
+
+/* 第一列保持左对齐 */
+.stats-table-container th:first-child,
+.stats-table-container td:first-child {
+    text-align: left;
+}
+
+/* 其他列居中 */
+.stats-table-container th:not(:first-child),
+.stats-table-container td:not(:first-child) {
+    text-align: center;
 }
 
 .stats-table-container th {

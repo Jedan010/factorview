@@ -156,34 +156,16 @@ document.addEventListener('DOMContentLoaded', function () {
     fetch(`/api/factor?${queryParams.toString()}`)
       .then(response => response.json())
       .then(data => {
-        // 验证数据格式
-        const tbody = table.querySelector('tbody');
         renderTable(data);
-
-        // 更新图表数据
-        if (data.chart_data) {
-          updateChart({
-            dates: data.chart_data.dates,
-            values: data.chart_data.values
-          });
-        }
 
         // 初始化排序功能
         initSorting();
       })
-      .catch(error => console.error('Error:', error));
   }
 
-  // 更新图表数据
-  function updateChart(data) {
-    dateChart.data.labels = data.dates;
-    dateChart.data.datasets[0].data = data.values;
-    dateChart.update();
-  }
 
   // 初始加载
   fetchFactors();
-
 
 
   function renderTable(factor) {

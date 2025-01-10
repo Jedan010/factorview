@@ -10,106 +10,107 @@
 </head>
 
 <body>
-    <!-- 返回因子列表按钮 -->
-    <div class="back-button-container">
+    <div class="header-container">
+
+        <h1>因子表现: <span id="factor-name"></span></h1>
+
         <a href="/factor" class="back-button">返回因子列表</a>
-    </div>
 
-    <h1>Factor Performance: <span id="factor-name"></span></h1>
 
-    <!-- 日期筛选输入框 -->
-    <div class="date-filter-container">
-        <label for="start-date">起始日期:</label>
-        <input type="date" id="start-date">
-        <label for="end-date">结束日期:</label>
-        <input type="date" id="end-date">
-        <button>筛选</button>
-    </div>
 
-    <div class="chart-and-stats-container" id="ic-chart-container">
-        <div class="chart-container" id="ic-chart"></div>
+        <!-- 日期筛选输入框 -->
+        <div class="date-filter-container">
+            <label for="start-date">起始日期:</label>
+            <input type="date" id="start-date">
+            <label for="end-date">结束日期:</label>
+            <input type="date" id="end-date">
+            <button>筛选</button>
+        </div>
 
-        <!-- 因子统计表格 -->
-        <div class="stats-table-container" id="ic-stats-table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>因子名称</th>
-                        <th>IC</th>
-                        <th>ICIR</th>
-                        <th>T值</th>
-                        <th>正收益比例</th>
-                        <th>负收益比例</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td id="factor-name-cell"></td>
-                        <td id="ic-cell"></td>
-                        <td id="icir-cell"></td>
-                        <td id="tvalue-cell"></td>
-                        <td id="positive-ratio-cell"></td>
-                        <td id="negative-ratio-cell"></td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="chart-and-stats-container" id="ic-chart-container">
+            <div class="chart-container" id="ic-chart"></div>
+
+            <!-- 因子统计表格 -->
+            <div class="stats-table-container" id="ic-stats-table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>因子名称</th>
+                            <th>IC</th>
+                            <th>ICIR</th>
+                            <th>T值</th>
+                            <th>正收益比例</th>
+                            <th>负收益比例</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id="factor-name-cell"></td>
+                            <td id="ic-cell"></td>
+                            <td id="icir-cell"></td>
+                            <td id="tvalue-cell"></td>
+                            <td id="positive-ratio-cell"></td>
+                            <td id="negative-ratio-cell"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="chart-and-stats-container" id="group-chart-container">
+            <div class="chart-container" id="group-chart"></div>
+
+            <!-- 因子统计表格 -->
+            <div class="stats-table-container" id="group-stats-table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>因子名称</th>
+                            <th>分组名称</th>
+                            <th>累计收益率</th>
+                            <th>年化收益率</th>
+                            <th>年化波动率</th>
+                            <th>最大回撤</th>
+                            <th>夏普比率</th>
+                            <th>卡玛比率</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 动态插入数据 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="chart-and-stats-container" id="backtest-chart-container">
+            <div class="chart-container" id="backtest-chart"></div>
+
+            <!-- 回测统计表格 -->
+            <div class="stats-table-container" id="backtest-stats-table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>因子名称</th>
+                            <th>收益类型</th>
+                            <th>累计收益率</th>
+                            <th>总年数</th>
+                            <th>年化收益率</th>
+                            <th>年化波动率</th>
+                            <th>最大回撤</th>
+                            <th>夏普比率</th>
+                            <th>卡玛比率</th>
+                            <th>平均持仓数</th>
+                            <th>年双边换手率</th>
+                            <th>年交易费</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 动态插入数据 -->
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-
-    <div class="chart-and-stats-container" id="group-chart-container">
-        <div class="chart-container" id="group-chart"></div>
-
-        <!-- 因子统计表格 -->
-        <div class="stats-table-container" id="group-stats-table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>因子名称</th>
-                        <th>分组名称</th>
-                        <th>累计收益率</th>
-                        <th>年化收益率</th>
-                        <th>年化波动率</th>
-                        <th>最大回撤</th>
-                        <th>夏普比率</th>
-                        <th>卡玛比率</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- 动态插入数据 -->
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="chart-and-stats-container" id="backtest-chart-container">
-        <div class="chart-container" id="backtest-chart"></div>
-        
-        <!-- 回测统计表格 -->
-        <div class="stats-table-container" id="backtest-stats-table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>因子名称</th>
-                        <th>收益类型</th>
-                        <th>累计收益率</th>
-                        <th>总年数</th>
-                        <th>年化收益率</th>
-                        <th>年化波动率</th>
-                        <th>最大回撤</th>
-                        <th>夏普比率</th>
-                        <th>卡玛比率</th>
-                        <th>平均持仓数</th>
-                        <th>年双边换手率</th>
-                        <th>年交易费</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- 动态插入数据 -->
-                </tbody>
-            </table>
-        </div>
-    </div>
-
     <script type="module" src="{{ url_for('static', filename='js/factor_perf.js') }}"></script>
 </body>
 

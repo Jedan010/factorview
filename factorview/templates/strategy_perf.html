@@ -4,48 +4,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Strategy Performance</title>
+    <title>策略表现 - 因子分析系统</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/strategy_perf.css') }}">
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 
 <body>
-    <!-- 返回策略列表按钮 -->
-    <div class="back-button-container">
+    <div class="header-container">
+        <h1>策略表现: <span id="strategy-name"></span></h1>
+
         <a href="/strategy" class="back-button">返回策略列表</a>
-    </div>
 
-    <h1>Strategy Performance: <span id="strategy-name"></span></h1>
+        <div class="filter-section">
+            <div id="pool-filter" class="filter-group"></div>
+            <div id="period-filter" class="filter-group"></div>
+            <div id="benchmark-filter" class="filter-group"></div>
+            <div id="optimizer-filter" class="filter-group"></div>
 
-    <!-- 日期筛选输入框 -->
-    <div class="date-filter-container">
-        <label for="start-date">起始日期:</label>
-        <input type="date" id="start-date">
-        <label for="end-date">结束日期:</label>
-        <input type="date" id="end-date">
-        <button>筛选</button>
-    </div>
+            <div class="date-filter-container">
+                <div class="filter-group">
+                    <label>开始日期:</label>
+                    <input type="date" id="start-date">
+                </div>
+                <div class="filter-group">
+                    <label>结束日期:</label>
+                    <input type="date" id="end-date">
+                </div>
+            </div>
 
-    <div class="chart-and-stats-container" id="backtest-chart-container">
-        <div class="chart-container" id="backtest-chart"></div>
+            <button id="apply-filters">应用筛选</button>
+        </div>
 
-        <!-- 回测统计表格 -->
-        <div class="stats-table-container" id="backtest-stats-table-container">
-            <table>
+        <div class="chart-and-stats-container" id="backtest-chart-container">
+            <!-- <h2>回测表现</h2> -->
+
+            <div class="chart-container" id="backtest-chart"></div>
+
+            <!-- 回测统计表格 -->
+            <div class="stats-table-container" id="backtest-stats-table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>策略名称</th>
+                            <th>收益类型</th>
+                            <th>累计收益率</th>
+                            <th>总年数</th>
+                            <th>年化收益率</th>
+                            <th>年化波动率</th>
+                            <th>最大回撤</th>
+                            <th>夏普比率</th>
+                            <th>卡玛比率</th>
+                            <th>平均持仓数</th>
+                            <th>年双边换手率</th>
+                            <th>年交易费</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 动态插入数据 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 因子表现表格 -->
+        <div class="factor-table-container">
+            <h2>因子表现</h2>
+
+            <table id="factor-table">
                 <thead>
                     <tr>
-                        <th>策略名称</th>
-                        <th>收益类型</th>
-                        <th>累计收益率</th>
-                        <th>总年数</th>
-                        <th>年化收益率</th>
-                        <th>年化波动率</th>
-                        <th>最大回撤</th>
+                        <th>因子名称</th>
+                        <th>类型</th>
+                        <th>IC</th>
+                        <th>ICIR</th>
+                        <th>TOP</th>
+                        <th>BOTTON</th>
+                        <th>多空</th>
+                        <th>超额年化收益率</th>
+                        <th>超额最大回撤</th>
                         <th>夏普比率</th>
                         <th>卡玛比率</th>
-                        <th>平均持仓数</th>
-                        <th>年双边换手率</th>
-                        <th>年交易费</th>
+                        <th>年双边换手</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -53,34 +92,10 @@
                 </tbody>
             </table>
         </div>
+        
     </div>
 
-    <!-- 因子表现表格 -->
-    <div class="factor-table-container">
-        <h2>因子表现</h2>
-        <table id="factor-performance-table">
-            <thead>
-                <tr>
-                    <th>因子名称</th>
-                    <th>类型</th>
-                    <th>IC</th>
-                    <th>ICIR</th>
-                    <th>TOP</th>
-                    <th>BOTTON</th>
-                    <th>多空</th>
-                    <th>超额年化收益率</th>
-                    <th>超额最大回撤</th>
-                    <th>夏普比率</th>
-                    <th>卡玛比率</th>
-                    <th>年双边换手</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- 动态插入数据 -->
-            </tbody>
-        </table>
-    </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module" src="{{ url_for('static', filename='js/strategy_perf.js') }}"></script>
 </body>
 

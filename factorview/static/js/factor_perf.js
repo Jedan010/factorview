@@ -70,17 +70,18 @@ function plotCharts(data) {
             }
         }
     ], {
-        title: { text: 'IC序列', font: { size: 20, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } },
-        xaxis: { title: { text: '日期', font: { size: 16, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } } },
-        yaxis: { title: { text: 'IC值', font: { size: 16, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } } },
+        title: { text: 'IC序列', font: { size: 30, color: '#1a73e8', weight: 'bold' } },
+        yaxis: { title: { text: 'IC值', font: { size: 16, weight: 'bold' } } },
         barmode: 'group',
         legend: {
             orientation: 'h',
             y: -0.2,
             x: 0.5,
             xanchor: 'center',
-            font: { size: 14, family: 'Arial, sans-serif', color: '#000', weight: 'bold' }
+            font: { size: 14, weight: 'bold' }
         },
+        plot_bgcolor: "rgba(0,0,0,0)",
+        paper_bgcolor: "rgba(0,0,0,0)",
     });
 
     // 更新统计表格数据
@@ -130,11 +131,11 @@ function plotCharts(data) {
     groupData.push(lsHedgeDrawdown);
 
     Plotly.newPlot('group-chart', groupData, {
-        title: { text: '分组收益', font: { size: 20, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } },
-        xaxis: { title: { text: '日期', font: { size: 16, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } } },
-        yaxis: { title: { text: '收益率', font: { size: 16, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } } },
+        title: { text: '分组收益', font: { size: 30, color: '#1a73e8', weight: 'bold' } },
+        xaxis: { title: { text: '日期', font: { size: 16, weight: 'bold' } } },
+        yaxis: { title: { text: '收益率', font: { size: 16, weight: 'bold' } } },
         yaxis2: { // 添加第二个y轴配置
-            title: { text: '回撤', font: { size: 16, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } },
+            title: { text: '回撤', font: { size: 16, weight: 'bold' } },
             overlaying: 'y',
             side: 'right',
             tickformat: ',.1%' // 添加百分数格式
@@ -144,14 +145,16 @@ function plotCharts(data) {
             y: -0.15,
             x: 0.5,
             xanchor: 'center',
-            font: { size: 14, family: 'Arial, sans-serif', color: '#000', weight: 'bold' }
+            font: { size: 14, weight: 'bold' }
         },
+        plot_bgcolor: "rgba(0,0,0,0)",
+        paper_bgcolor: "rgba(0,0,0,0)",
     });
 
     // 清空并更新绩效统计表
     const groupStatsTable = document.getElementById('group-stats-table-container').querySelector('table tbody');
     groupStatsTable.innerHTML = '';  // 清空表格
-    
+
     data.group.values[0].forEach((_, i) => {
         const groupReturns = data.group.values.map(v => v[i]);
         const perfStats = calcPerf(groupReturns);
@@ -205,11 +208,11 @@ function plotCharts(data) {
     );
 
     Plotly.newPlot('backtest-chart', backtestData, {
-        title: { text: '回测结果', font: { size: 20, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } },
-        xaxis: { title: { text: '日期', font: { size: 16, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } } },
-        yaxis: { title: { text: '收益率', font: { size: 16, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } } },
+        title: { text: '回测结果', font: { size: 30, color: '#1a73e8', weight: 'bold' } },
+        xaxis: { title: { text: '日期', font: { size: 16, weight: 'bold' } } },
+        yaxis: { title: { text: '收益率', font: { size: 16, weight: 'bold' } } },
         yaxis2: { // 添加第二个y轴配置
-            title: { text: '回撤', font: { size: 16, family: 'Arial, sans-serif', color: '#000', weight: 'bold' } },
+            title: { text: '回撤', font: { size: 16, weight: 'bold' } },
             overlaying: 'y',
             side: 'right',
             tickformat: ',.1%' // 添加百分数格式
@@ -219,14 +222,16 @@ function plotCharts(data) {
             y: -0.15,
             x: 0.5,
             xanchor: 'center',
-            font: { size: 14, family: 'Arial, sans-serif', color: '#000', weight: 'bold' }
-        }
+            font: { size: 14, weight: 'bold' }
+        },
+        plot_bgcolor: "rgba(0,0,0,0)",
+        paper_bgcolor: "rgba(0,0,0,0)",
     });
 
     // 清空并更新回测统计表
     const backtestStatsTable = document.getElementById('backtest-stats-table-container').querySelector('table tbody');
     backtestStatsTable.innerHTML = '';  // 清空表格
-    
+
     backtest_names.forEach((name, i) => {
         const returns = data.backtest_ret.values.map(v => v[i]);
         const perfStats = calcPerf(returns);
@@ -235,12 +240,12 @@ function plotCharts(data) {
         const firstDate = new Date(data.backtest_ret.index[0]);
         const lastDate = new Date(data.backtest_ret.index[data.backtest_ret.index.length - 1]);
         const totalYears = (lastDate - firstDate) / (1000 * 60 * 60 * 24 * 365);
-        
+
         // 计算新增指标
         const positions = data.backtest_ret.values.map(v => v[v.length - 3]); // 持仓数
         const turnovers = data.backtest_ret.values.map(v => v[v.length - 2]); // 换手率
         const fees = data.backtest_ret.values.map(v => v[v.length - 1]); // 交易费率
-        
+
         const avgPosition = positions.reduce((a, b) => a + b, 0) / positions.length;
         const annualTurnover = turnovers.reduce((a, b) => a + b, 0) / totalYears;
         const annualFee = fees.reduce((a, b) => a + b, 0) / totalYears;

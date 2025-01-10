@@ -37,3 +37,48 @@ h1 {
 .btn:hover {
     background-color: #0056b3;
 }
+
+table {
+    width: 85%;
+    margin-top: 30px;
+    font-size: 14px;
+    border-radius: 0;
+    border-collapse: collapse;
+    text-align: left;
+    border: none;
+}
+
+th,
+td {
+    padding: 15px;
+    border: none;
+    border-bottom: 1px solid #ddd;
+}
+
+/* 第一列保持左对齐 */
+th:first-child,
+td:first-child {
+    text-align: left;
+}
+
+/* 其他列居中 */
+th:not(:first-child),
+td:not(:first-child) {
+    text-align: center;
+}
+
+th {
+    background-color: #1a73e8;
+    color: white;
+    font-weight: 500;
+    position: relative;
+}
+
+th:hover {
+    background-color: #1557b0;
+    cursor: pointer;
+}
+
+tr:nth-child(even) {
+    background-color: #f8f9fa;
+}

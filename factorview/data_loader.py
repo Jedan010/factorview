@@ -198,6 +198,7 @@ def load_strategy_perf(
     strategy_name: str,
     start_date: str = None,
     end_date: str = None,
+    pool: str = "all",
     optimizer_index: str = "000905.SH",
     benchmark_index: str = "000905.SH",
     **kwargs,
