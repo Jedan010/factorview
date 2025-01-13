@@ -62,7 +62,7 @@ def get_factor_info():
                 "index": clean_for_json(df.index),
             }
             for name, df in zip(
-                ["factor_info", "ic", "group", "backtest_ret"], factor_stats
+                ["factor_info", "ic", "group", "backtest_ret", "date"], factor_stats
             )
         }
     )
@@ -118,7 +118,7 @@ def get_strategy_factors(strategy_name):
                 "index": clean_for_json(df.index),
             }
             for name, df in zip(
-                ["factor_info", "ic", "group", "backtest_ret"], factor_stats
+                ["factor_info", "ic", "group", "backtest_ret", "date"], factor_stats
             )
         }
     )

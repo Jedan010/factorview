@@ -87,6 +87,8 @@ function plotCharts(data) {
     // 更新统计表格数据
     const stats = calcICStats(data.ic.values);
     document.getElementById('factor-name-cell').textContent = factorName;
+    document.getElementById('start-date-cell').textContent = data.ic.index[0];
+    document.getElementById('end-date-cell').textContent = data.ic.index.at(-1);
     document.getElementById('ic-cell').textContent = stats.ic.toFixed(3);
     document.getElementById('icir-cell').textContent = stats.icir.toFixed(3);
     document.getElementById('tvalue-cell').textContent = stats.tvalue.toFixed(2);
@@ -167,6 +169,8 @@ function plotCharts(data) {
         row.innerHTML = `
             <td>${factorName}</td>
             <td>${i < 10 ? `Group ${i + 1}` : 'LS Hedge'}</td>
+            <td>${data.group.index[0]}</td>
+            <td>${data.group.index.at(-1)}</td>
             <td>${(perfStats.cumulativeReturn * 100).toFixed(2)}%</td>
             <td>${(perfStats.annualizedReturn * 100).toFixed(2)}%</td>
             <td>${(perfStats.annualizedVolatility * 100).toFixed(2)}%</td>
@@ -238,7 +242,7 @@ function plotCharts(data) {
 
         // 计算总年数
         const firstDate = new Date(data.backtest_ret.index[0]);
-        const lastDate = new Date(data.backtest_ret.index[data.backtest_ret.index.length - 1]);
+        const lastDate = new Date(data.backtest_ret.index.at(-1));
         const totalYears = (lastDate - firstDate) / (1000 * 60 * 60 * 24 * 365);
 
         // 计算新增指标
@@ -258,8 +262,10 @@ function plotCharts(data) {
         row.innerHTML = `
             <td>${factorName}</td>
             <td>${name}</td>
-            <td>${(perfStats.cumulativeReturn * 100).toFixed(2)}%</td>
+            <td>${data.backtest_ret.index[0]}</td>
+            <td>${data.backtest_ret.index.at(-1)}</td>
             <td>${totalYears.toFixed(1)}</td>
+            <td>${(perfStats.cumulativeReturn * 100).toFixed(2)}%</td>            
             <td>${(perfStats.annualizedReturn * 100).toFixed(2)}%</td>
             <td>${(perfStats.annualizedVolatility * 100).toFixed(2)}%</td>
             <td>${(perfStats.maxDrawdown * 100).toFixed(2)}%</td>

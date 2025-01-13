@@ -189,6 +189,8 @@ document.addEventListener('DOMContentLoaded', function () {
       // 添加所有单元格
       row.appendChild(linkCell);
       row.appendChild(createCell(factor.factor_info.values.class_name[i]));
+      row.appendChild(createCell(factor.date.values.min[i], { isDate: true }));
+      row.appendChild(createCell(factor.date.values.max[i], { isDate: true }));
       row.appendChild(createCell(factor.ic.values.ic[i], { isNum: true, decimalPlaces: 3 }));
       row.appendChild(createCell(factor.ic.values.icir[i], { isNum: true, decimalPlaces: 3 }));
       row.appendChild(createCell(factor.group.values.top_ret[i], { isNum: true, isPercent: true }));

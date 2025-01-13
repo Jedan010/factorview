@@ -159,7 +159,7 @@ function fetchData() {
         .then(response => response.json())
         .then(factor => {
             renderTable(factor);
-            
+
         });
 
 }
@@ -240,7 +240,7 @@ function plotCharts(data) {
 
         // 计算总年数
         const firstDate = new Date(data.backtest_ret.index[0]);
-        const lastDate = new Date(data.backtest_ret.index[data.backtest_ret.index.length - 1]);
+        const lastDate = new Date(data.backtest_ret.index.at(-1));
         const totalYears = (lastDate - firstDate) / (1000 * 60 * 60 * 24 * 365);
 
         // 计算新增指标
@@ -260,8 +260,10 @@ function plotCharts(data) {
         row.innerHTML = `
             <td>${strategyName}</td>
             <td>${name}</td>
-            <td>${(perfStats.cumulativeReturn * 100).toFixed(2)}%</td>
+            <td>${data.backtest_ret.index[0]}</td>
+            <td>${data.backtest_ret.index.at(-1)}</td>
             <td>${totalYears.toFixed(1)}</td>
+            <td>${(perfStats.cumulativeReturn * 100).toFixed(2)}%</td>            
             <td>${(perfStats.annualizedReturn * 100).toFixed(2)}%</td>
             <td>${(perfStats.annualizedVolatility * 100).toFixed(2)}%</td>
             <td>${(perfStats.maxDrawdown * 100).toFixed(2)}%</td>
@@ -308,6 +310,8 @@ function renderTable(factor) {
         // 添加所有单元格
         row.appendChild(linkCell);
         row.appendChild(createCell(factor.factor_info.values.class_name[i]));
+        row.appendChild(createCell(factor.date.values.min[i], { isDate: true }));
+        row.appendChild(createCell(factor.date.values.max[i], { isDate: true }));
         row.appendChild(createCell(factor.ic.values.ic[i], { isNum: true, decimalPlaces: 3 }));
         row.appendChild(createCell(factor.ic.values.icir[i], { isNum: true, decimalPlaces: 3 }));
         row.appendChild(createCell(factor.group.values.top_ret[i], { isNum: true, isPercent: true }));
@@ -347,7 +351,7 @@ function initSorting() {
                 dataType: 'auto'
             });
             tbody.setAttribute('data-sort', isAscending ? 'desc' : 'asc');
-            
+
             // 更新表头样式
             headers.forEach(h => h.classList.remove('sorted-asc', 'sorted-desc'));
             header.classList.add(isAscending ? 'sorted-desc' : 'sorted-asc');

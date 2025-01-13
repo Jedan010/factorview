@@ -22,7 +22,7 @@
             <div id="optimizer-filter" class="filter-group"></div>
             <div class="date-filter-container">
                 <div class="filter-group">
-                    <label>开始日期:</label>
+                    <label>起始日期:</label>
                     <input type="date" id="start-date">
                 </div>
                 <div class="filter-group">
@@ -38,6 +38,8 @@
                 <tr>
                     <th>因子名称</th>
                     <th>类型</th>
+                    <th>起始日期</th>
+                    <th>结束日期</th>
                     <th>IC</th>
                     <th>ICIR</th>
                     <th>TOP</th>
@@ -56,7 +58,7 @@
         </table>
 
     </div>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module" src="{{ url_for('static', filename='js/factor_info.js') }}"></script>
 </body>

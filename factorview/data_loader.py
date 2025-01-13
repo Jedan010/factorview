@@ -17,9 +17,13 @@ def load_factor_stats(
         is_cache=True,
     )
     if factor_info_df.empty:
-        factor_names = pd.Index([])
+        factor_names = pd.Index([], name="factor_name")
     else:
-        factor_names = factor_info_df.index
+        factor_names = pd.Index(factor_info_df.index, name="factor_name")
+
+    date_df = pd.DataFrame(
+        index=factor_names, columns=["min", "max"], dtype="datetime64[ns]"
+    )
 
     ic_df = FactorManagerAll.get_perf_factor(
         perf_type="ic",
@@ -33,9 +37,7 @@ def load_factor_stats(
         **kwargs,
     )
     if ic_df.empty:
-        ic_stats = pd.DataFrame(
-            index=pd.Index([], name="factor_name"), columns=["ic", "icir"]
-        ).reindex(factor_names)
+        ic_stats = pd.DataFrame(index=factor_names, columns=["ic", "icir"])
     else:
         ic_stats = (
             ic_df["corr"]
@@ -49,6 +51,18 @@ def load_factor_stats(
                     axis=1,
                 ).reindex(factor_names)
             )
+        )
+        _date_ic = (
+            ic_df.reset_index("date")["date"]
+            .groupby("factor_name")
+            .agg(["min", "max"])
+            .reindex(factor_names)
+        )
+        date_df["min"] = (
+            date_df[["min"]].join(_date_ic["min"], rsuffix="_2").max(axis=1)
+        )
+        date_df["max"] = (
+            date_df[["max"]].join(_date_ic["max"], rsuffix="_2").min(axis=1)
         )
 
     group_df = FactorManagerAll.get_perf_factor(
@@ -64,9 +78,8 @@ def load_factor_stats(
     )
     if group_df.empty:
         group_stats = pd.DataFrame(
-            index=pd.Index([], name="factor_name"),
-            columns=["bottom_ret", "top_ret", "long_short_ret"],
-        ).reindex(factor_names)
+            index=factor_names, columns=["bottom_ret", "top_ret", "long_short_ret"]
+        )
     else:
         group_stats = (
             group_df.groupby("factor_name")
@@ -79,6 +92,18 @@ def load_factor_stats(
                     "LS_Hedge": "long_short_ret",
                 }
             )
+        )
+        _date_group = (
+            group_df.reset_index("date")["date"]
+            .groupby("factor_name")
+            .agg(["min", "max"])
+            .reindex(factor_names)
+        )
+        date_df["min"] = (
+            date_df[["min"]].join(_date_group["min"], rsuffix="_2").max(axis=1)
+        )
+        date_df["max"] = (
+            date_df[["max"]].join(_date_group["max"], rsuffix="_2").min(axis=1)
         )
 
     backtest_df = FactorManagerAll.get_perf_factor(
@@ -98,7 +123,7 @@ def load_factor_stats(
     )
     if backtest_df.empty:
         backtest_stats = pd.DataFrame(
-            index=pd.Index([], name="factor_name"),
+            index=factor_names,
             columns=[
                 "annual_return",
                 "max_drawdown",
@@ -106,7 +131,7 @@ def load_factor_stats(
                 "calmar_ratio",
                 "turnover",
             ],
-        ).reindex(factor_names)
+        )
     else:
         backtest_stats = backtest_df.groupby("factor_name").pipe(
             lambda x: pd.concat(
@@ -128,8 +153,20 @@ def load_factor_stats(
                 axis=1,
             ).reindex(factor_names)
         )
+        _date_backtest = (
+            backtest_df.reset_index("date")["date"]
+            .groupby("factor_name")
+            .agg(["min", "max"])
+            .reindex(factor_names)
+        )
+        date_df["min"] = (
+            date_df[["min"]].join(_date_backtest["min"], rsuffix="_2").max(axis=1)
+        )
+        date_df["max"] = (
+            date_df[["max"]].join(_date_backtest["max"], rsuffix="_2").min(axis=1)
+        )
 
-    return (factor_info_df, ic_stats, group_stats, backtest_stats)
+    return (factor_info_df, ic_stats, group_stats, backtest_stats, date_df)
 
 
 def load_factor_perf(factor_name: str):
