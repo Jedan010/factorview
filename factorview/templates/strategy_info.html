@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>策略列表 - 因子分析系统</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/strategy_info.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/strategy_info.css') }}">
 </head>
 
 <body>
@@ -40,7 +40,7 @@
         </table>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="/static/js/strategy_info.js" type="module"></script>
+    <script type="module" src="{{ url_for('static', path='js/strategy_info.js') }}"></script>
 </body>
 
 </html>

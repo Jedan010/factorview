@@ -1,6 +1,9 @@
 import numpy as np
 import pandas as pd
-from flask import Flask, jsonify, render_template, request
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 
 from factorview.data_loader import (
     load_factor_perf,
@@ -10,7 +13,11 @@ from factorview.data_loader import (
     load_strategy_perf,
 )
 
-app = Flask(__name__, static_folder="static")
+app = FastAPI()
+app.mount(
+    "/factorview/static", StaticFiles(directory="factorview/static"), name="static"
+)
+templates = Jinja2Templates(directory="factorview/templates")
 
 
 def clean_for_json(data):
@@ -27,102 +34,115 @@ def clean_for_json(data):
     return data
 
 
-@app.route("/")
-def home():
-    return render_template("index.html")
+@app.get("/", response_class=HTMLResponse)
+async def root(request: Request):
+    return templates.TemplateResponse(request=request, name="index.html")
 
 
-@app.route("/factor")
-def factor_info():
-    return render_template("factor_info.html")
+@app.get("/factor", response_class=HTMLResponse)
+async def factor_info(request: Request):
+    return templates.TemplateResponse(request=request, name="factor_info.html")
 
 
-@app.route("/factor/<factor_name>")
-def factor_perf(factor_name):
-    return render_template("factor_perf.html", factor_name=factor_name)
+@app.get("/factor/{factor_name}", response_class=HTMLResponse)
+async def factor_perf(request: Request, factor_name: str):
+    return templates.TemplateResponse(
+        request=request, name="factor_perf.html", context={"factor_name": factor_name}
+    )
 
 
-@app.route("/strategy")
-def strategy_info():
-    return render_template("strategy_info.html")
+@app.get("/strategy", response_class=HTMLResponse)
+async def strategy_info(request: Request):
+    return templates.TemplateResponse(request=request, name="strategy_info.html")
 
 
-@app.route("/strategy/<strategy_name>")
-def strategy_perf(strategy_name):
-    return render_template("strategy_perf.html", strategy_name=strategy_name)
+@app.get("/strategy/{strategy_name}", response_class=HTMLResponse)
+async def strategy_perf(request: Request, strategy_name: str):
+    return templates.TemplateResponse(
+        request=request,
+        name="strategy_perf.html",
+        context={"strategy_name": strategy_name},
+    )
 
 
-@app.route("/api/factor", methods=["GET"])
-def get_factor_info():
-    factor_stats = load_factor_stats(**request.args)
-    return jsonify(
+@app.get("/api/factor")
+async def get_factor_info(request: Request):
+    factor_stats = load_factor_stats(**request.query_params)
+    return JSONResponse(
         {
             name: {
                 "values": clean_for_json(df),
                 "index": clean_for_json(df.index),
             }
             for name, df in zip(
-                ["factor_info", "ic", "group", "backtest_ret", "date"], factor_stats
+                ["factor_info", "ic", "group", "backtest_ret", "date"],
+                factor_stats,
             )
         }
     )
 
 
-@app.route("/api/factor/<factor_name>", methods=["GET"])
-def get_factor_performance(factor_name):
+@app.get("/api/factor/{factor_name}")
+async def get_factor_perf(factor_name: str):
     factor_perf = load_factor_perf(factor_name)
-    return jsonify(
+    return JSONResponse(
         {
             name: {
                 "values": clean_for_json(df.values),
                 "index": clean_for_json(df.index),
             }
-            for name, df in zip(["ic", "group", "backtest_ret"], factor_perf)
+            for name, df in zip(
+                ["ic", "group", "backtest_ret"],
+                factor_perf,
+            )
         }
     )
 
 
-@app.route("/api/strategy", methods=["GET"])
-def get_strategy_info():
-    df = load_strategy_info(**request.args)
-    return jsonify(
+@app.get("/api/strategy")
+async def get_strategy_info(request: Request):
+    strategy_info = load_strategy_info(**request.query_params)
+    return JSONResponse(
         {
             "strategy_info": {
-                "values": clean_for_json(df),
-                "index": clean_for_json(df.index),
+                "values": clean_for_json(strategy_info),
+                "index": clean_for_json(strategy_info.index),
             }
         }
     )
 
 
-@app.route("/api/strategy/<strategy_name>", methods=["GET"])
-def get_strategy_perf(strategy_name):
-    (backtest_df,) = load_strategy_perf(strategy_name, **request.args)
-    return jsonify(
+@app.get("/api/strategy/{strategy_name}")
+async def get_strategy_perf(strategy_name: str, request: Request):
+    (backtest_df,) = load_strategy_perf(strategy_name, **request.query_params)
+    return JSONResponse(
         {
             "backtest_ret": {
                 "values": clean_for_json(backtest_df.values),
                 "index": clean_for_json(backtest_df.index),
-            },
+            }
         }
     )
 
 
-@app.route("/api/strategy/<strategy_name>/factors", methods=["GET"])
-def get_strategy_factors(strategy_name):
-    factor_stats = load_strategy_factor_stats(strategy_name, **request.args)
-    return jsonify(
+@app.get("/api/strategy/{strategy_name}/factors")
+async def get_strategy_factors(strategy_name: str, request: Request):
+    factor_stats = load_strategy_factor_stats(strategy_name, **request.query_params)
+    return JSONResponse(
         {
             name: {
                 "values": clean_for_json(df),
                 "index": clean_for_json(df.index),
             }
             for name, df in zip(
-                ["factor_info", "ic", "group", "backtest_ret", "date"], factor_stats
+                ["factor_info", "ic", "group", "backtest_ret", "date"],
+                factor_stats,
             )
         }
     )
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    import uvicorn
+
+    uvicorn.run(app, host="0.0.0.0", port=5000)
