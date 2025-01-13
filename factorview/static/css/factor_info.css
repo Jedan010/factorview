@@ -85,7 +85,7 @@ h1 {
 table {
     width: 85%;
     margin-top: 30px;
-    font-size: 14px;
+    font-size: 16px;
     border-radius: 0;
     border-collapse: collapse;
     text-align: left;
@@ -97,17 +97,29 @@ td {
     padding: 15px;
     border: none;
     border-bottom: 1px solid #ddd;
+    white-space: normal;
+    word-wrap: break-word;
 }
 
-/* 第一列保持左对齐 */
 th:first-child,
 td:first-child {
+    width: 220px;
+    max-width: 220px;
+}
+
+
+/* 第一列和第二列保持左对齐 */
+th:first-child,
+td:first-child,
+th:nth-child(2),
+td:nth-child(2) {
     text-align: left;
 }
 
+
 /* 其他列居中 */
-th:not(:first-child),
-td:not(:first-child) {
+th:not(:first-child):not(:nth-child(2)),
+td:not(:first-child):not(:nth-child(2)) {
     text-align: center;
 }
 
@@ -123,35 +135,25 @@ th:hover {
     cursor: pointer;
 }
 
-th .sort-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
+th {
     cursor: pointer;
-    opacity: 0.7;
-    right: auto;
-    left: calc(100% - 20px);
+    transition: background-color 0.2s;
 }
 
-th.sorted-asc::after,
-th.sorted-desc::after {
-    content: '';
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 0;
-    height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
+th:hover {
+    background-color: #1557b0;
 }
 
-th.sorted-asc::after {
-    border-bottom: 5px solid white;
+.sorted-asc::after {
+    content: " ▲";
+    font-size: 12px;
+    color: white;
 }
 
-th.sorted-desc::after {
-    border-top: 5px solid white;
+.sorted-desc::after {
+    content: " ▼";
+    font-size: 12px;
+    color: white;
 }
 
 tr:nth-child(even) {

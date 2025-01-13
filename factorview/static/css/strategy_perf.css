@@ -167,24 +167,36 @@ h2 {
     border-collapse: collapse;
     text-align: left;
     border: none;
+    font-size: 16px;
 }
 
 #factor-table th,
 #factor-table td {
-    padding: 12px;
+    padding: 10px;
     border: none;
     border-bottom: 1px solid #ddd;
+    white-space: normal;
+    word-wrap: break-word;
 }
 
-/* 第一列保持左对齐 */
 #factor-table th:first-child,
 #factor-table td:first-child {
+    width: 200px;
+    max-width: 200px;
+}
+
+/* 第一列和第二列保持左对齐 */
+#factor-table th:first-child,
+#factor-table td:first-child,
+#factor-table th:nth-child(2),
+#factor-table td:nth-child(2) {
     text-align: left;
 }
 
+
 /* 其他列居中 */
-#factor-table th:not(:first-child),
-#factor-table td:not(:first-child) {
+#factor-table th:not(:first-child):not(:nth-child(2)),
+#factor-table td:not(:first-child):not(:nth-child(2)) {
     text-align: center;
 }
 
@@ -193,35 +205,27 @@ h2 {
     color: #1a73e8;
     font-weight: 600;
     border-bottom: 2px solid #1a73e8;
-    white-space: nowrap;
+    white-space: normal;
     position: relative;
 }
 
-.sort-btn {
-    display: inline-block;
-    margin-left: 8px;
+#factor-table th {
     cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#factor-table th:hover {
+    background-color: rgba(26, 115, 232, 0.1);
+}
+
+.sorted-asc::after {
+    content: " ▲";
     font-size: 12px;
     color: #1a73e8;
-    transition: color 0.2s;
 }
 
-.sort-btn:hover {
-    color: #1557b0;
-}
-
-#factor-table tr:hover {
-    background-color: rgba(26, 115, 232, 0.05);
-}
-
-@media (max-width: 768px) {
-    .stats-table-container {
-        width: 90%;
-        overflow-x: auto;
-    }
-
-    .factor-table-container {
-        width: 90%;
-        overflow-x: auto;
-    }
+.sorted-desc::after {
+    content: " ▼";
+    font-size: 12px;
+    color: #1a73e8;
 }

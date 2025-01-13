@@ -337,14 +337,9 @@ function initSorting() {
 
     const headers = table.querySelectorAll('th');
     headers.forEach((header, index) => {
-        // 添加排序按钮
-        const sortBtn = document.createElement('div');
-        sortBtn.className = 'sort-btn';
-        sortBtn.innerHTML = '⇅';
-        header.appendChild(sortBtn);
-
-        // 点击排序按钮排序
-        sortBtn.addEventListener('click', () => {
+        // 点击表头排序
+        header.style.cursor = 'pointer';
+        header.addEventListener('click', () => {
             const isAscending = tbody.getAttribute('data-sort') === 'asc';
             sortTable(table, index, {
                 order: isAscending ? 'asc' : 'desc',

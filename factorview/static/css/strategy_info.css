@@ -122,35 +122,25 @@ th:hover {
     cursor: pointer;
 }
 
-th .sort-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
+th {
     cursor: pointer;
-    opacity: 0.7;
-    right: auto;
-    left: calc(100% - 20px);
+    transition: background-color 0.2s;
 }
 
-th.sorted-asc::after,
-th.sorted-desc::after {
-    content: '';
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 0;
-    height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
+th:hover {
+    background-color: #1557b0;
 }
 
-th.sorted-asc::after {
-    border-bottom: 5px solid white;
+.sorted-asc::after {
+    content: " ▲";
+    font-size: 12px;
+    color: white;
 }
 
-th.sorted-desc::after {
-    border-top: 5px solid white;
+.sorted-desc::after {
+    content: " ▼";
+    font-size: 12px;
+    color: white;
 }
 
 tr:nth-child(even) {

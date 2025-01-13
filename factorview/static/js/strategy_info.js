@@ -152,18 +152,19 @@ document.addEventListener('DOMContentLoaded', function () {
   function initSorting() {
     const headers = table.querySelectorAll('th');
     headers.forEach((header, index) => {
-      const sortBtn = document.createElement('div');
-      sortBtn.className = 'sort-btn';
-      sortBtn.innerHTML = '⇅';
-      header.appendChild(sortBtn);
-
-      sortBtn.addEventListener('click', () => {
+      // 点击表头排序
+      header.style.cursor = 'pointer';
+      header.addEventListener('click', () => {
         const isAscending = table.getAttribute('data-sort') === 'asc';
         sortTable(table, index, {
           order: isAscending ? 'asc' : 'desc',
           dataType: 'auto'
         });
         table.setAttribute('data-sort', isAscending ? 'desc' : 'asc');
+
+        // 更新表头样式
+        headers.forEach(h => h.classList.remove('sorted-asc', 'sorted-desc'));
+        header.classList.add(isAscending ? 'sorted-desc' : 'sorted-asc');
       });
     });
   }
