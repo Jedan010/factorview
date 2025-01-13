@@ -60,7 +60,7 @@ factorview/
 
 1. 启动开发服务器：
    ```bash
-   uvicorn factorview.app:app --reload
+   uvicorn factorview.app:app --reload --port 5000
    ```
 
 2. 在浏览器中访问 http://localhost:8000
