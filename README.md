@@ -60,15 +60,16 @@ factorview/
 
 1. 启动开发服务器：
    ```bash
-   flask run
+   uvicorn factorview.app:app --reload
    ```
 
-2. 在浏览器中访问 http://localhost:5000
+2. 在浏览器中访问 http://localhost:8000
 
 ## 依赖
 
 - Python 3.8+
-- Flask
+- FastAPI
+- Uvicorn
 - Pandas
 - NumPy
 - Matplotlib
