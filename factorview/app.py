@@ -1,9 +1,11 @@
 import numpy as np
 import pandas as pd
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from fastapi.middleware.cors import CORSMiddleware  # 导入CORS中间件
 
 from factorview.data_loader import (
     load_factor_perf,
@@ -14,9 +16,25 @@ from factorview.data_loader import (
 )
 
 app = FastAPI()
-app.mount(
-    "/factorview/static", StaticFiles(directory="factorview/static"), name="static"
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
+
+# 允许所有来源的跨域请求
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # 允许所有来源
+    allow_credentials=True,
+    allow_methods=["*"],   # 允许所有HTTP方法
+    allow_headers=["*"]    # 允许所有请求头
+)
+
+app.mount("/factorview/static", StaticFiles(directory="factorview/static"), name="static")
 templates = Jinja2Templates(directory="factorview/templates")
 
 
@@ -145,4 +163,4 @@ async def get_strategy_factors(strategy_name: str, request: Request):
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=5000)
+    uvicorn.run(app, host="0.0.0.0", port=8000)
