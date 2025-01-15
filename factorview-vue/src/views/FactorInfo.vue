@@ -28,7 +28,7 @@
         <div class="filter-group">
           <label>时间周期</label>
           <select v-model="filters.period">
-            <option value="all">全部</option>
+            <option value="all">自定义</option>
             <option value="ytd">年初至今</option>
             <option value="3m">近3个月</option>
             <option value="1y">近1年</option>
@@ -61,19 +61,9 @@
         <div class="filter-group">
           <label>日期范围</label>
           <div class="date-range-picker">
-            <DatePicker
-              v-model:value="filters.startDate"
-              type="date"
-              placeholder="开始日期"
-              class="date-picker"
-            />
-            <span class="date-separator">至</span>
-            <DatePicker
-              v-model:value="filters.endDate" 
-              type="date"
-              placeholder="结束日期"
-              class="date-picker"
-            />
+            <DatePicker v-model:value="filters.startDate" type="date" placeholder="开始日期" class="date-picker" />
+            <span class="date-separator">  至  </span>
+            <DatePicker v-model:value="filters.endDate" type="date" placeholder="结束日期" class="date-picker" />
           </div>
         </div>
 
@@ -89,7 +79,7 @@
           <div class="loader"></div>
           数据加载中...
         </div>
-        
+
         <div class="skeleton-loader">
           <div class="skeleton-row" v-for="n in 5" :key="n">
             <div class="skeleton-cell"></div>
@@ -150,6 +140,7 @@
 import { getFactors } from '@/api/factor';
 import DatePicker from 'vue-datepicker-next';
 import 'vue-datepicker-next/index.css';
+import moment from 'moment';
 
 export default {
   components: {
@@ -237,11 +228,14 @@ export default {
         const dateRange = this.getDateRange(this.filters.period);
         const params = {
           pool: this.filters.pool,
-          period: this.filters.period,
-          benchmark: this.filters.benchmark,
-          optimizer: this.filters.optimizer,
-          start_date: this.filters.period === 'all' ? this.filters.startDate : dateRange.startDate,
-          end_date: this.filters.period === 'all' ? this.filters.endDate : dateRange.endDate
+          benchmark_index: this.filters.benchmark,
+          optimizer_index: this.filters.optimizer,
+          start_date: this.filters.period === 'all'
+            ? (this.filters.startDate ? moment(this.filters.startDate).format('YYYY-MM-DD') : null)
+            : (dateRange.startDate ? moment(dateRange.startDate).format('YYYY-MM-DD') : null),
+          end_date: this.filters.period === 'all'
+            ? (this.filters.endDate ? moment(this.filters.endDate).format('YYYY-MM-DD') : null)
+            : (dateRange.endDate ? moment(dateRange.endDate).format('YYYY-MM-DD') : null)
         };
 
         const response = await getFactors(params);
@@ -350,51 +344,51 @@ export default {
       }
     }
 
-  .filter-group {
-    .date-range-picker {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      
-      .date-picker {
-        flex: 1;
-        min-width: 120px;
-        
-        :deep(.mx-input-wrapper) {
-          height: 100%;
-          
-          .mx-input {
+    .filter-group {
+      .date-range-picker {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        .date-picker {
+          flex: 1;
+          min-width: 120px;
+
+          :deep(.mx-input-wrapper) {
             height: 100%;
-            padding: 0.5rem;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-            background: white;
-            color: #4a5568;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-            
-            &:hover {
-              border-color: #3498db;
-            }
-            
-            &:focus {
-              outline: none;
-              border-color: #3498db;
-              box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+
+            .mx-input {
+              height: 100%;
+              padding: 0.5rem;
+              border-radius: 8px;
+              border: 1px solid #e2e8f0;
+              background: white;
+              color: #4a5568;
+              font-size: 0.9rem;
+              transition: all 0.2s ease;
+
+              &:hover {
+                border-color: #3498db;
+              }
+
+              &:focus {
+                outline: none;
+                border-color: #3498db;
+                box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+              }
             }
           }
         }
-      }
-      
-      .date-separator {
-        color: #4a5568;
-        font-size: 0.9rem;
-        padding: 0 0.5rem;
+
+        .date-separator {
+          color: #4a5568;
+          font-size: 0.9rem;
+          padding: 0 0.5rem;
+        }
       }
     }
-  }
 
-  .data-table {
+    .data-table {
       background: #2d2d2d;
 
       th {
@@ -442,13 +436,13 @@ export default {
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     transition: transform 0.2s ease, background 0.3s ease;
-    
+
     .header-controls {
       display: flex;
       align-items: center;
       gap: 1rem;
     }
-    
+
     &:hover {
       transform: translateY(-2px);
     }
@@ -459,7 +453,7 @@ export default {
       font-weight: 600;
       margin: 0;
       position: relative;
-      
+
       &::after {
         content: '';
         position: absolute;
@@ -491,16 +485,16 @@ export default {
     }
   }
 
-    .filters {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 12px;
-      margin-bottom: 2rem;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1.5rem;
-      align-items: flex-end;
+  .filters {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: flex-end;
 
     .filter-group {
       display: flex;
@@ -600,7 +594,7 @@ export default {
       tr {
         transition: all 0.2s ease;
         transform-origin: center;
-        
+
         &:nth-child(even) {
           background: #f8f9fa;
         }
@@ -726,6 +720,7 @@ export default {
     0% {
       background-position: 200% 0;
     }
+
     100% {
       background-position: -200% 0;
     }
@@ -743,13 +738,23 @@ export default {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
 
 @media (max-width: 768px) {
@@ -787,6 +792,7 @@ export default {
       padding: 0.5rem;
 
       table {
+
         th,
         td {
           padding: 0.75rem;

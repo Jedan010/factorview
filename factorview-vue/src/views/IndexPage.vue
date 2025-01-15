@@ -68,7 +68,7 @@ h1 {
   &.factor-btn {
     background-color: #3498db;
     &:hover {
-      background-color: darken(#3498db, 10%);
+    background-color: color.adjust(#3498db, $lightness: -10%);
       transform: translateY(-2px);
     }
   }
@@ -76,7 +76,7 @@ h1 {
   &.strategy-btn {
     background-color: #e74c3c;
     &:hover {
-      background-color: darken(#e74c3c, 10%);
+    background-color: color.adjust(#e74c3c, $lightness: -10%);
       transform: translateY(-2px);
     }
   }

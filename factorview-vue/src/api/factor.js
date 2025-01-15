@@ -1,17 +1,18 @@
-import axios from 'axios';
+import axios from 'axios'
 
-const API_BASE_URL = 'http://localhost:8000'; // 更新为FastAPI服务的端口
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
 
 export const getFactors = async (params) => {
   try {
-    // 只保留pool、start_date和end_date参数
-    const { pool, start_date, end_date } = params;
-    const response = await axios.get(`${API_BASE_URL}/api/factor`, { 
-      params: { pool, start_date, end_date }
-    });
-    return response.data;
+    const response = await axios.get(`${API_BASE_URL}/api/factor`, { params })
+    return response.data
   } catch (error) {
-    console.error('Error fetching factors:', error);
-    throw error;
+    console.error('Error fetching factors:', error)
+    throw error
   }
-};
+}
+
+export const getFactorPerf = async (factorName, params) => {
+  const response = await axios.get(`${API_BASE_URL}/api/factor/${factorName}`, { params })
+  return response.data
+}
