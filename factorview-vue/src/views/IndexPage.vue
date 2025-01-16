@@ -23,23 +23,16 @@ export default {
 @use "sass:color";
 
 .index-container {
-  min-height: 100vh;
-  padding: 2rem;
-  margin: 0;
-  box-sizing: border-box;
+  padding: 10rem;
 }
 
 .content-wrapper {
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 1rem;
   text-align: center;
 }
 
 h1 {
   font-size: 2rem;
-  margin-bottom: 2rem;
+  margin-bottom: 4rem;
   color: #2c3e50;
 }
 
@@ -47,36 +40,33 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1rem;
   margin-bottom: 2rem;
-  width: 100%;
 }
 
 .btn {
-  width: 300px;
-  max-width: 100%;
+  width: 200px;
   padding: 1.2rem;
-  border-radius: 6px;
+  border-radius: 10px;
   text-align: center;
   text-decoration: none;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: all 0.2s ease;
+  font-size: 1.3rem;
   color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
   &.factor-btn {
     background-color: #3498db;
+
     &:hover {
-    background-color: color.adjust(#3498db, $lightness: -10%);
+      background-color: color.adjust(#3498db, $lightness: -10%);
       transform: translateY(-2px);
     }
   }
 
   &.strategy-btn {
     background-color: #e74c3c;
+
     &:hover {
-    background-color: color.adjust(#e74c3c, $lightness: -10%);
+      background-color: color.adjust(#e74c3c, $lightness: -10%);
       transform: translateY(-2px);
     }
   }
@@ -85,21 +75,6 @@ h1 {
 .footer {
   margin-top: 2rem;
   color: #666;
-  font-size: 0.9rem;
-}
-
-@media (max-width: 768px) {
-  .index-container {
-    padding: 1rem;
-  }
-
-  .content-wrapper,
-  .btn {
-    padding: 1.5rem;
-  }
-
-  h1 {
-    font-size: 1.8rem;
-  }
+  font-size: 1rem;
 }
 </style>

@@ -12,7 +12,7 @@ const routes = [
     component: () => import('@/views/FactorInfo.vue')
   },
   {
-    path: '/factor/:factor_name',
+    path: '/factor/:factorName',
     name: 'FactorPerformance',
     component: () => import('@/views/FactorPerformance.vue')
   },

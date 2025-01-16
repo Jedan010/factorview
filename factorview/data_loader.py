@@ -169,18 +169,39 @@ def load_factor_stats(
     return (factor_info_df, ic_stats, group_stats, backtest_stats, date_df)
 
 
-def load_factor_perf(factor_name: str):
+def load_factor_perf(
+    factor_name: str,
+    start_date: str = None,
+    end_date: str = None,
+    pool: str = "all",
+    optimizer_index: str = "000905.SH",
+    benchmark_index: str = "000905.SH",
+    **kwargs,
+):
+    if start_date is not None:
+        start_date = pd.to_datetime(start_date)
+        _start = start_date - pd.DateOffset(days=400)
+    else:
+        _start = None
     ic_df = FactorManagerAll.get_perf_factor(
         perf_type="ic",
         factor_names=factor_name,
+        start_date=_start,
+        end_date=end_date,
         index_col="date",
         fields="corr",
+        query=[("pool", pool)],
         is_cache=True,
+        **kwargs,
     )
     ic_df["corr_roll"] = ic_df["corr"].rolling(252, min_periods=60).mean()
+    if start_date is not None:
+        ic_df = ic_df.loc[start_date:]
     group_df = FactorManagerAll.get_perf_factor(
         perf_type="group_pnl",
         factor_names=factor_name,
+        start_date=start_date,
+        end_date=end_date,
         index_col="date",
         fields=[
             "Group_01",
@@ -195,11 +216,15 @@ def load_factor_perf(factor_name: str):
             "Group_10",
             "LS_Hedge",
         ],
+        query=[("pool", pool)],
         is_cache=True,
+        **kwargs,
     )
     backtest_df = FactorManagerAll.get_perf_factor(
         perf_type="backtest_ret",
         factor_names=factor_name,
+        start_date=start_date,
+        end_date=end_date,
         index_col="date",
         fields=[
             "strategy_ret",
@@ -209,8 +234,13 @@ def load_factor_perf(factor_name: str):
             "turnover",
             "transaction_fee",
         ],
-        query=[("optimizer_index", "000905.SH"), ("benchmark_index", "000905.SH")],
+        query=[
+            ("pool", pool),
+            ("optimizer_index", optimizer_index),
+            ("benchmark_index", benchmark_index),
+        ],
         is_cache=True,
+        **kwargs,
     )
 
     return (ic_df, group_df, backtest_df)

@@ -1,0 +1,452 @@
+// 基础容器样式
+.factor-base-container {
+  width: 1500px;
+  margin: auto;
+  padding: 2rem;
+  min-height: 100vh;
+
+  // 暗黑模式
+  &.dark-mode {
+    background: #1a1a1a;
+    color: #ffffff;
+
+    .header {
+      background: #2d2d2d;
+      color: #ffffff;
+
+      h1 {
+        color: #ffffff;
+      }
+
+      .back-btn,
+      .theme-toggle {
+        background: linear-gradient(145deg, #4a5568, #2d3748);
+      }
+
+    }
+
+    .filters {
+      background: #2d2d2d;
+      color: #ffffff;
+
+      label {
+        color: #e2e8f0;
+      }
+
+      select,
+      input {
+        background: #3d3d3d;
+        border-color: #4a5568;
+        color: #ffffff;
+
+        &:focus {
+          border-color: #63b3ed;
+          box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.1);
+        }
+      }
+
+      .apply-btn {
+        background: linear-gradient(145deg, #4a5568, #2d3748);
+      }
+    }
+
+    .data-table {
+      background: #2d2d2d;
+
+      th {
+        background: #2d2d2d;
+        color: #ffffff;
+      }
+
+      tr {
+        &:nth-child(even) {
+          background: #3d3d3d;
+        }
+
+        &:hover {
+          background: #4a5568;
+        }
+      }
+
+      .factor-link {
+        color: #63b3ed;
+
+        &:hover {
+          color: #4299e1;
+        }
+      }
+    }
+
+    .loading-indicator {
+      color: #e2e8f0;
+    }
+
+    .error-message {
+      background: #4a1a1a;
+      color: #fc8181;
+      border-color: #742a2a;
+    }
+  }
+}
+
+// Header样式
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+  .header-controls {
+    display: flex;
+    gap: 1rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    color: #2c3e50;
+    font-weight: 600;
+    margin: 0;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 60px;
+      height: 3px;
+      background: #3498db;
+      border-radius: 2px;
+    }
+  }
+
+  .back-btn,
+  .theme-toggle {
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(145deg, #3498db, #2980b9);
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 2px 4px rgba(52, 152, 219, 0.2);
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+    }
+  }
+
+}
+
+// 筛选器样式
+.filters {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  align-items: flex-end;
+
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    label {
+      font-weight: 500;
+      color: #352e2e;
+      font-size: 1rem;
+    }
+
+    select,
+    input {
+      padding: 0.5rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      background: white;
+      color: #535d6d;
+      transition: all 0.2s ease;
+      font-size: 0.9rem;
+      min-width: 0;
+
+      &:focus {
+        outline: none;
+        border-color: #3498db;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+      }
+    }
+
+    .date-range-picker {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      .date-picker {
+        flex: 1;
+        min-width: 120px;
+
+        :deep(.mx-input-wrapper) {
+          height: 100%;
+
+          .mx-input {
+            height: 100%;
+            padding: 0.5rem;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            color: #4a5568;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+
+            &:hover {
+              border-color: #3498db;
+            }
+
+            &:focus {
+              outline: none;
+              border-color: #3498db;
+              box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+            }
+          }
+        }
+      }
+
+      .date-separator {
+        color: #4a5568;
+        font-size: 0.9rem;
+        padding: 0 0.5rem;
+      }
+    }
+  }
+
+  .apply-btn {
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(145deg, #3498db, #2980b9);
+    color: white;
+    // border: none;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    align-self: flex-end;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(52, 152, 219, 0.2);
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+    }
+  }
+}
+
+// 数据表格样式
+.data-table {
+  background: white;
+  border-radius: 12px;
+  overflow-x: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  padding: 1rem;
+
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+
+    th,
+    td {
+      padding: 1rem;
+      text-align: center;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+    }
+
+    th {
+      background: white;
+      color: #2c3e50;
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      border-bottom: 2px solid #e2e8f0;
+      white-space: nowrap;
+
+      &:hover {
+        background: #f1f5f9;
+      }
+
+      &.sorted-asc::after {
+        content: ' ▲';
+        color: #3498db;
+      }
+
+      &.sorted-desc::after {
+        content: ' ▼';
+        color: #3498db;
+      }
+    }
+
+    tr {
+      transition: all 0.2s ease;
+      transform-origin: center;
+
+      &:nth-child(even) {
+        background: #f8f9fa;
+      }
+
+      &:hover {
+        background: #e2e8f0;
+        transform: scale(1.01);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      &:last-child td {
+        border-bottom: none;
+      }
+
+      td {
+        transition: all 0.2s ease;
+        position: relative;
+
+        &::after {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: 1px;
+          background: #e2e8f0;
+          transform: scaleX(0);
+          transform-origin: right;
+          transition: transform 0.3s ease;
+        }
+
+        &:hover::after {
+          transform: scaleX(1);
+          transform-origin: left;
+        }
+      }
+    }
+
+    .factor-link {
+      color: #3498db;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.2s ease;
+
+      &:hover {
+        color: #2980b9;
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+// 加载指示器
+.loading-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+  color: #4a5568;
+  animation: fadeIn 0.3s ease;
+
+  .loader {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 3px solid #e2e8f0;
+    border-top-color: #3498db;
+    animation: spin 1s linear infinite;
+  }
+}
+
+// 错误提示
+.error-message {
+  background: #fff5f5;
+  color: #e53e3e;
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+  border: 1px solid #fed7d7;
+  box-shadow: 0 2px 4px rgba(229, 62, 62, 0.1);
+}
+
+// 动画
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+// 响应式设计
+@media (max-width: 768px) {
+  .factor-base-container {
+    padding: 1rem;
+    overflow-x: hidden;
+
+    .header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1rem;
+
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      .back-btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    .filters {
+      grid-template-columns: 1fr;
+      padding: 1rem;
+      gap: 1rem;
+
+      .apply-btn {
+        width: 100%;
+      }
+    }
+
+    .data-table {
+      padding: 0.5rem;
+
+      table {
+
+        th,
+        td {
+          padding: 0.75rem;
+          font-size: 0.8rem;
+        }
+      }
+    }
+  }
+}
