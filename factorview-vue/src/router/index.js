@@ -22,6 +22,11 @@ const routes = [
     component: () => import('@/views/StrategyInfo.vue')
   },
   {
+    path: '/strategy/:strategyName',
+    name: 'StrategyPerformance',
+    component: () => import('@/views/StrategyPerformance.vue')
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
     component: () => import('@/views/NotFound.vue')

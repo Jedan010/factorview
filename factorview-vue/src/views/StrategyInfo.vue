@@ -95,7 +95,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { getStrategies } from '@/api/strategy'
+import { getStrategy } from '@/api/strategy'
 import moment from 'moment'
 
 // 状态管理
@@ -141,7 +141,7 @@ async function fetchStrategies() {
       optimizer_index: filters.value.optimizer
     }
 
-    const response = await getStrategies(params)
+    const response = await getStrategy(params)
     strategies.value = processStrategyData(response)
   } catch (err) {
     console.error('Error fetching strategies:', err)
