@@ -2,6 +2,12 @@
 import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { getFactorPerf } from '@/api/factor'
+
+const isDarkMode = ref(false)
+function toggleDarkMode() {
+  isDarkMode.value = !isDarkMode.value
+  document.documentElement.classList.toggle('dark', isDarkMode.value)
+}
 import ICChart from '@/components/ICChart.vue'
 import ICTables from '@/components/ICTables.vue'
 import GroupChart from '@/components/GroupChart.vue'
@@ -116,10 +122,15 @@ async function fetchData() {
 </script>
 
 <template>
-  <div class="factor-performance">
+  <div class="factor-performance" :class="{ 'dark-mode': isDarkMode }">
     <div class="header">
       <h1>{{ factorName }} 因子绩效</h1>
       <div class="header-controls">
+        <button class="theme-toggle" @click="toggleDarkMode">
+          <span class="theme-icon">
+            {{ isDarkMode ? 'Dark Mode' : 'Light Mode' }}
+          </span>
+        </button>
         <router-link to="/factor" class="back-btn">返回因子列表</router-link>
       </div>
     </div>
@@ -232,8 +243,10 @@ async function fetchData() {
       font-size: 1.5rem;
       font-weight: 600;
     }
+  }
 
-    &.dark-mode {
+  &.dark-mode {
+    .chart-container {
       background: #2d2d2d;
 
       h2 {

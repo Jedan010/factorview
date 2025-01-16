@@ -5,6 +5,10 @@ const props = defineProps({
   backtestData: {
     type: Object,
     required: true
+  },
+  isDarkMode: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -85,7 +89,7 @@ function calcPerf(returns) {
 </script>
 
 <template>
-  <div class="backtest-stats-table">
+  <div class="backtest-stats-table" :class="{ 'dark-mode': isDarkMode }">
     <table>
       <thead>
         <tr>
@@ -215,33 +219,5 @@ function calcPerf(returns) {
     }
   }
 
-  &.dark-mode {
-    background: #2d2d2d;
-
-    table {
-      th {
-        background: #2d2d2d;
-        color: #ffffff;
-      }
-
-      tr {
-        &:nth-child(even) {
-          background: #3d3d3d;
-        }
-
-        &:hover {
-          background: #4a5568;
-        }
-
-        &.excess-row {
-          background-color: #4a1a1a;
-
-          &:hover {
-            background: #742a2a;
-          }
-        }
-      }
-    }
-  }
 }
 </style>

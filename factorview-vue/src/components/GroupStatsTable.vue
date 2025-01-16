@@ -6,6 +6,10 @@ const props = defineProps({
     type: Object,
     required: true
   },
+  isDarkMode: {
+    type: Boolean,
+    default: false
+  }
 })
 
 function calcPerf(dailyReturns) {
@@ -75,7 +79,7 @@ const stats = computed(() => {
 </script>
 
 <template>
-  <div class="group-stats-table">
+  <div class="group-stats-table" :class="{ 'dark-mode': isDarkMode }">
     <table>
       <thead>
         <tr>
@@ -197,33 +201,7 @@ const stats = computed(() => {
     }
   }
 
-  &.dark-mode {
-    background: #2d2d2d;
 
-    table {
-      th {
-        background: #2d2d2d;
-        color: #ffffff;
-      }
-
-      tr {
-        &:nth-child(even) {
-          background: #3d3d3d;
-        }
-
-        &:hover {
-          background: #4a5568;
-        }
-
-        &.ls-hedge {
-          background-color: #4a1a1a;
-
-          &:hover {
-            background: #742a2a;
-          }
-        }
-      }
-    }
-  }
+  
 }
 </style>

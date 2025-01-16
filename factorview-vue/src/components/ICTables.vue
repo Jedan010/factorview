@@ -5,6 +5,10 @@ const props = defineProps({
   icData: {
     type: Array,
     required: true
+  },
+  isDarkMode: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -26,7 +30,7 @@ const icStats = computed(() => {
 </script>
 
 <template>
-  <div class="ic-tables">
+  <div class="ic-tables" :class="{ 'dark-mode': isDarkMode }">
    
     <div class="stats-grid">
       <div class="stat-item">
@@ -95,9 +99,17 @@ const icStats = computed(() => {
     .stat-item {
       background: #3d3d3d;
 
+      .stat-label {
+        color: #e2e8f0;
+      }
+
       .stat-value {
         color: #ffffff;
       }
+    }
+
+    .stats-grid {
+      color: #ffffff;
     }
   }
 }
