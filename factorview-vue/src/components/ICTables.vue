@@ -27,8 +27,7 @@ const icStats = computed(() => {
 
 <template>
   <div class="ic-tables">
-    <h2>IC统计</h2>
-    
+   
     <div class="stats-grid">
       <div class="stat-item">
         <div class="stat-label">均值</div>
@@ -60,13 +59,6 @@ const icStats = computed(() => {
   background: white;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-
-  h2 {
-    margin-bottom: 1rem;
-    color: #2c3e50;
-    font-size: 1.5rem;
-    font-weight: 600;
-  }
 
   .stats-grid {
     display: grid;

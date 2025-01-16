@@ -4,6 +4,10 @@ import { useRoute } from 'vue-router'
 import { getFactorPerf } from '@/api/factor'
 import ICChart from '@/components/ICChart.vue'
 import ICTables from '@/components/ICTables.vue'
+import GroupChart from '@/components/GroupChart.vue'
+import GroupStatsTable from '@/components/GroupStatsTable.vue'
+import BacktestChart from '@/components/BacktestChart.vue'
+import BacktestStatsTable from '@/components/BacktestStatsTable.vue'
 import DatePicker from 'vue-datepicker-next'
 import 'vue-datepicker-next/index.css'
 import moment from 'moment'
@@ -80,7 +84,7 @@ async function fetchData() {
   try {
     loading.value = true
     error.value = null
-    
+
     const dateRange = getDateRange(filters.value.period)
     const params = {
       pool: filters.value.pool,
@@ -95,11 +99,13 @@ async function fetchData() {
     }
 
     const data = await getFactorPerf(factorName.value, params)
-    
+    console.log('API response:', data)
+
     icData.value = data.ic
     groupData.value = data.group
     backtestData.value = data.backtest_ret
-    
+    console.log('groupData:', groupData.value)
+
   } catch (err) {
     error.value = err
     console.error('Error fetching factor data:', err)
@@ -168,7 +174,7 @@ async function fetchData() {
           <label>日期范围</label>
           <div class="date-range-picker">
             <DatePicker v-model:value="filters.startDate" type="date" placeholder="开始日期" class="date-picker" />
-            <span class="date-separator">  至  </span>
+            <span class="date-separator"> 至 </span>
             <DatePicker v-model:value="filters.endDate" type="date" placeholder="结束日期" class="date-picker" />
           </div>
         </div>
@@ -186,18 +192,21 @@ async function fetchData() {
       </div>
 
       <div v-else>
-        <ICChart :icData="icData" />
-        
-        <ICTables :icData="icData" />
-
+        <div class="chart-container">
+          <h2>IC统计</h2>
+          <ICChart :icData="icData" />
+          <ICTables :icData="icData" />
+        </div>
         <div class="chart-container">
           <h2>分组收益</h2>
-          <!-- TODO: 实现分组收益图表 -->
+          <GroupChart :groupData="groupData" />
+          <GroupStatsTable :groupData="groupData" />
         </div>
 
         <div class="chart-container">
           <h2>回测结果</h2>
-          <!-- TODO: 实现回测结果图表 -->
+          <BacktestChart :backtestData="backtestData" />
+          <BacktestStatsTable :backtestData="backtestData" />
         </div>
       </div>
     </div>
@@ -226,7 +235,7 @@ async function fetchData() {
 
     &.dark-mode {
       background: #2d2d2d;
-      
+
       h2 {
         color: #ffffff;
       }
