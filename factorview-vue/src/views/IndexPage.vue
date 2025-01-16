@@ -50,7 +50,7 @@ h1 {
   border-radius: 10px;
   text-align: center;
   text-decoration: none;
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   color: white;
 
   &.factor-btn {

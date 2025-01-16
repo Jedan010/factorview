@@ -228,7 +228,7 @@ async function fetchData() {
 @use '../assets/styles/base-factor';
 
 .factor-performance {
-  @extend .factor-base-container;
+  @extend .base-container;
 
   .chart-container {
     margin-top: 2rem;

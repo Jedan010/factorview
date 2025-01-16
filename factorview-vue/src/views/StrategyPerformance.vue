@@ -284,6 +284,6 @@ async function fetchData() {
 
 
 .strategy-performance {
-  @extend .factor-base-container;
+  @extend .base-container;
 }
 </style>

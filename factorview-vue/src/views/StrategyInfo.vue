@@ -193,7 +193,7 @@ fetchStrategies()
 @use '../assets/styles/base-factor';
 
 .strategy-info-container {
-  @extend .factor-base-container;
+  @extend .base-container;
 
   .data-table {
     th {

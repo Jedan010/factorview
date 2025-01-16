@@ -1,92 +1,169 @@
-// 基础容器样式
-.factor-base-container {
-  width: 1500px;
-  margin: auto;
-  padding: 2rem;
-  min-height: 100vh;
+// 全局暗黑模式样式
+html.dark {
+  background: #1a1a1a;
+  color: #ffffff;
 
-  // 暗黑模式
-  &.dark-mode {
+  .base-container {
     background: #1a1a1a;
     color: #ffffff;
+  }
 
-    .header {
-      background: #2d2d2d;
+  .header {
+    background: #2d2d2d;
+    color: #ffffff;
+
+    h1 {
       color: #ffffff;
-
-      h1 {
-        color: #ffffff;
-      }
-
-      .back-btn,
-      .theme-toggle {
-        background: linear-gradient(145deg, #4a5568, #2d3748);
-      }
-
     }
 
-    .filters {
-      background: #2d2d2d;
-      color: #ffffff;
+    .back-btn,
+    .theme-toggle {
+      background: linear-gradient(145deg, #4a5568, #2d3748);
+    }
+  }
 
-      label {
-        color: #e2e8f0;
+  .filters {
+    background: #2a2a2a;
+    border: 1px solid #333333;
+    color: #e2e8f0;
+
+    label {
+      color: #e2e8f0;
+      font-weight: 500;
+    }
+
+    select,
+    input {
+      background: #333333;
+      border: 1px solid #444444;
+      color: #e2e8f0;
+      transition: all 0.2s ease;
+
+      &::placeholder {
+        color: #666666;
       }
 
-      select,
-      input {
-        background: #3d3d3d;
-        border-color: #4a5568;
-        color: #ffffff;
+      &:hover {
+        border-color: #555555;
+      }
 
-        &:focus {
-          border-color: #63b3ed;
-          box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.1);
+      &:focus {
+        border-color: #63b3ed;
+        box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.2);
+        background: #3a3a3a;
+      }
+    }
+
+    .apply-btn {
+      background: linear-gradient(145deg, #4a5568, #2d3748);
+      border: 1px solid #444444;
+      color: #ffffff;
+      font-weight: 500;
+      transition: all 0.2s ease;
+
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        background: linear-gradient(145deg, #556677, #3a4758);
+      }
+
+      &:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+    }
+
+    .date-range-picker {
+      .date-picker {
+        :deep(.mx-input-wrapper) {
+          .mx-input {
+            background: #333333;
+            border-color: #444444;
+            color: #e2e8f0;
+
+            &:hover {
+              border-color: #555555;
+            }
+
+            &:focus {
+              border-color: #63b3ed;
+              box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.2);
+            }
+          }
         }
       }
 
-      .apply-btn {
-        background: linear-gradient(145deg, #4a5568, #2d3748);
+      .date-separator {
+        color: #666666;
       }
     }
+  }
 
-    .data-table {
-      background: #2d2d2d;
+  .data-table {
+    background: #1f1f1f;
+    border: 1px solid #333333;
 
+    table {
       th {
-        background: #2d2d2d;
+        background: #2a2a2a;
         color: #ffffff;
+        border-bottom-color: #444444;
+
+        &:hover {
+          background: #333333;
+        }
       }
 
       tr {
         &:nth-child(even) {
-          background: #3d3d3d;
+          background: #2a2a2a;
         }
 
         &:hover {
-          background: #4a5568;
+          background: #3a3a3a;
+          transform: scale(1);
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        td {
+          color: #e2e8f0;
+          border-bottom-color: #444444;
+
+          &::after {
+            background: #444444;
+          }
         }
       }
 
       .factor-link {
         color: #63b3ed;
+        font-weight: 500;
 
         &:hover {
           color: #4299e1;
+          text-decoration: underline;
         }
       }
     }
-
-    .loading-indicator {
-      color: #e2e8f0;
-    }
-
-    .error-message {
-      background: #4a1a1a;
-      color: #fc8181;
-      border-color: #742a2a;
-    }
   }
+
+  .loading-indicator {
+    color: #e2e8f0;
+  }
+
+  .error-message {
+    background: #4a1a1a;
+    color: #fc8181;
+    border-color: #742a2a;
+  }
+}
+
+// 基础容器样式
+.base-container {
+  width: 1500px;
+  margin: auto;
+  padding: 2rem;
+  min-height: 100vh;
 }
 
 // Header样式
@@ -142,7 +219,6 @@
       box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
     }
   }
-
 }
 
 // 筛选器样式
@@ -233,7 +309,6 @@
     padding: 0.75rem 1.5rem;
     background: linear-gradient(145deg, #3498db, #2980b9);
     color: white;
-    // border: none;
     border: 1px solid #e2e8f0;
     border-radius: 8px;
     cursor: pointer;
@@ -406,7 +481,7 @@
 
 // 响应式设计
 @media (max-width: 768px) {
-  .factor-base-container {
+  .base-container {
     padding: 1rem;
     overflow-x: hidden;
 
@@ -440,7 +515,6 @@
       padding: 0.5rem;
 
       table {
-
         th,
         td {
           padding: 0.75rem;
