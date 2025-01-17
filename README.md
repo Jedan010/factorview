@@ -1,8 +1,11 @@
 # FactorView
 
-FactorView 是一个用于分析和可视化因子数据的Python Web应用。
+FactorView 是一个用于分析和可视化因子数据的Web应用，采用前后端分离架构：
+- 后端：FastAPI
+- 前端：Vue.js
 
 ## 功能特性
+- 前后端分离架构
 - 因子数据加载与预处理
 - 因子数据可视化
 - 因子相关性分析
@@ -35,6 +38,16 @@ factorview/
 │   ├── index.html
 │   ├── strategy_info.html
 │   └── strategy_perf.html
+factorview-vue/
+├── src/
+│   ├── api/
+│   ├── assets/
+│   ├── components/
+│   ├── router/
+│   └── views/
+├── index.html
+├── package.json
+├── vite.config.js
 ```
 
 ## 安装
@@ -51,33 +64,53 @@ factorview/
    venv\Scripts\activate
    ```
 
-3. 安装依赖：
+3. 安装后端依赖：
    ```bash
    pip install -r requirements.txt
    ```
 
-## 使用
-
-1. 启动开发服务器：
+4. 安装前端依赖：
    ```bash
-   uvicorn factorview.app:app --reload --port 5000 --host 0.0.0.0
+   cd factorview-vue
+   npm install
    ```
 
-2. 在浏览器中访问 http://localhost:8000
+## 使用
+
+1. 启动后端开发服务器：
+   ```bash
+   uvicorn factorview.app:app --port 5000 --host 0.0.0.0 --reload
+   ```
+
+2. 启动前端开发服务器：
+   ```bash
+   cd factorview-vue
+   npm run dev
+   ```
+
+3. 在浏览器中访问 http://localhost:5173
 
 ## 依赖
 
-- Python 3.8+
-- FastAPI
-- Uvicorn
-- Pandas
-- NumPy
-- Matplotlib
+- 后端：
+  - Python 3.8+
+  - FastAPI
+  - Uvicorn
+  - Pandas
+  - NumPy
+  - Matplotlib
+
+- 前端：
+  - Node.js 16+
+  - Vue 3
+  - Vite
+  - Axios
+  - Chart.js
 
 ## 贡献
 
 欢迎提交Pull Request。请确保：
-- 代码符合PEP8规范
+- 代码符合PEP8规范（后端）和ESLint规范（前端）
 - 添加适当的单元测试
 - 更新相关文档
 
