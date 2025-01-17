@@ -1,11 +1,13 @@
 import numpy as np
 import pandas as pd
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from factorview.data_loader import (
+    load_factor_info,
     load_factor_perf,
     load_factor_stats,
     load_strategy_factor_stats,
@@ -14,6 +16,16 @@ from factorview.data_loader import (
 )
 
 app = FastAPI()
+
+# 允许所有来源的跨域请求
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # 允许所有来源
+    allow_credentials=True,
+    allow_methods=["*"],  # 允许所有HTTP方法
+    allow_headers=["*"],  # 允许所有请求头
+)
+
 app.mount(
     "/factorview/static", StaticFiles(directory="factorview/static"), name="static"
 )
@@ -67,7 +79,23 @@ async def strategy_perf(request: Request, strategy_name: str):
 
 @app.get("/api/factor")
 async def get_factor_info(request: Request):
-    factor_stats = load_factor_stats(**request.query_params)
+    factor_info = load_factor_info(**request.query_params)
+    return JSONResponse(
+        {
+            "factor_info": {
+                "values": clean_for_json(factor_info),
+                "index": clean_for_json(factor_info.index),
+            }
+        }
+    )
+
+
+@app.get("/api/factor/stats")
+async def get_factor_stats(request: Request):
+    params = {k: v if v else None for k, v in request.query_params.items()}
+    if "factor_names" in params and params["factor_names"]:
+        params["factor_names"] = params["factor_names"].split(",")
+    factor_stats = load_factor_stats(**params)
     return JSONResponse(
         {
             name: {
@@ -83,8 +111,8 @@ async def get_factor_info(request: Request):
 
 
 @app.get("/api/factor/{factor_name}")
-async def get_factor_perf(factor_name: str):
-    factor_perf = load_factor_perf(factor_name)
+async def get_factor_perf(factor_name: str, request: Request):
+    factor_perf = load_factor_perf(factor_name, **request.query_params)
     return JSONResponse(
         {
             name: {
@@ -145,4 +173,4 @@ async def get_strategy_factors(strategy_name: str, request: Request):
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=5000)
+    uvicorn.run(app, host="0.0.0.0", port=8000)

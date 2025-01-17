@@ -2,6 +2,48 @@ import pandas as pd
 from quantfactor import FactorManagerAll, p
 
 
+def load_factor_info(
+    factor_names: list[str] = None,
+    table_names: list[str] = None,
+    class_names: list[str] = None,
+    status: list[str] = None,
+    develop_codes: list[str] = None,
+    factor_ids: list[str] = None,
+    creation_time: list[str] = None,
+    query: list[str] = None,
+    **kwargs,
+):
+    """取得因子信息"""
+
+    if query is None:
+        query = []
+    if isinstance(query, (str, tuple)):
+        query = [query]
+
+    if table_names is not None:
+        query.append("table_name", table_names)
+    if class_names is not None:
+        query.append("class_name", class_names)
+    if status is not None:
+        query.append("status", status)
+    else:
+        query.append("status not in  ('tmp')")
+    if develop_codes is not None:
+        query.append("develop_code", develop_codes)
+    if factor_ids is not None:
+        query.append("factor_id", factor_ids)
+    if creation_time is not None:
+        query.append("creation_time", creation_time)
+
+    factor_info_df = FactorManagerAll.get_info_factor(
+        factor_names=factor_names,
+        query=query,
+        is_cache=True,  # **kwargs
+    )
+
+    return factor_info_df
+
+
 def load_factor_stats(
     factor_names: list[str] = None,
     start_date: str = None,
@@ -13,7 +55,7 @@ def load_factor_stats(
 ):
     factor_info_df = FactorManagerAll.get_info_factor(
         factor_names=factor_names,
-        query=[("status not in  ('invalid', 'highlyCorr', 'tmp')")],
+        query=[("status not in  ('tmp')")],
         is_cache=True,
     )
     if factor_info_df.empty:
@@ -169,18 +211,39 @@ def load_factor_stats(
     return (factor_info_df, ic_stats, group_stats, backtest_stats, date_df)
 
 
-def load_factor_perf(factor_name: str):
+def load_factor_perf(
+    factor_name: str,
+    start_date: str = None,
+    end_date: str = None,
+    pool: str = "all",
+    optimizer_index: str = "000905.SH",
+    benchmark_index: str = "000905.SH",
+    **kwargs,
+):
+    if start_date is not None:
+        start_date = pd.to_datetime(start_date)
+        _start = start_date - pd.DateOffset(days=400)
+    else:
+        _start = None
     ic_df = FactorManagerAll.get_perf_factor(
         perf_type="ic",
         factor_names=factor_name,
+        start_date=_start,
+        end_date=end_date,
         index_col="date",
         fields="corr",
+        query=[("pool", pool)],
         is_cache=True,
+        **kwargs,
     )
     ic_df["corr_roll"] = ic_df["corr"].rolling(252, min_periods=60).mean()
+    if start_date is not None:
+        ic_df = ic_df.loc[start_date:]
     group_df = FactorManagerAll.get_perf_factor(
         perf_type="group_pnl",
         factor_names=factor_name,
+        start_date=start_date,
+        end_date=end_date,
         index_col="date",
         fields=[
             "Group_01",
@@ -195,11 +258,15 @@ def load_factor_perf(factor_name: str):
             "Group_10",
             "LS_Hedge",
         ],
+        query=[("pool", pool)],
         is_cache=True,
+        **kwargs,
     )
     backtest_df = FactorManagerAll.get_perf_factor(
         perf_type="backtest_ret",
         factor_names=factor_name,
+        start_date=start_date,
+        end_date=end_date,
         index_col="date",
         fields=[
             "strategy_ret",
@@ -209,8 +276,13 @@ def load_factor_perf(factor_name: str):
             "turnover",
             "transaction_fee",
         ],
-        query=[("optimizer_index", "000905.SH"), ("benchmark_index", "000905.SH")],
+        query=[
+            ("pool", pool),
+            ("optimizer_index", optimizer_index),
+            ("benchmark_index", benchmark_index),
+        ],
         is_cache=True,
+        **kwargs,
     )
 
     return (ic_df, group_df, backtest_df)
