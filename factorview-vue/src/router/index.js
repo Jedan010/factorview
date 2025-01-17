@@ -12,6 +12,11 @@ const routes = [
     component: () => import('@/views/FactorInfo.vue')
   },
   {
+    path: '/factor/stats',
+    name: 'FactorStats',
+    component: () => import('@/views/FactorStats.vue')
+  },
+  {
     path: '/factor/:factorName',
     name: 'FactorPerformance',
     component: () => import('@/views/FactorPerformance.vue')

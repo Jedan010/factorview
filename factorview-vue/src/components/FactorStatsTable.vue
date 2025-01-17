@@ -1,13 +1,10 @@
 <template>
-  <div class="factor-table">
+  <div class="data-table">
     <table>
       <thead>
         <tr>
           <th v-for="column in columns" :key="column.key" @click="sortTable(column.key)">
             {{ column.label }}
-            <span v-if="sortColumn === column.key">
-              {{ sortOrder === 'asc' ? '↑' : '↓' }}
-            </span>
           </th>
         </tr>
       </thead>
@@ -18,13 +15,10 @@
               {{ factor.name }}
             </router-link>
           </td>
-          <td>{{ factor.className }}</td>
           <td>{{ formatDate(factor.startDate) }}</td>
           <td>{{ formatDate(factor.endDate) }}</td>
           <td>{{ formatNumber(factor.ic) }}</td>
           <td>{{ formatNumber(factor.icir) }}</td>
-          <td>{{ formatPercent(factor.topReturn) }}</td>
-          <td>{{ formatPercent(factor.bottomReturn) }}</td>
           <td>{{ formatPercent(factor.longShortReturn) }}</td>
           <td>{{ formatPercent(factor.annualReturn) }}</td>
           <td>{{ formatPercent(factor.maxDrawdown) }}</td>
@@ -42,21 +36,18 @@ import { computed, ref } from 'vue'
 
 export default {
   props: {
-    factors: {
-      type: Array,
+    factorData: {
+      type: Object,
       required: true
     }
   },
   setup(props) {
     const columns = [
       { key: 'name', label: '因子名称' },
-      { key: 'className', label: '类别' },
       { key: 'startDate', label: '开始日期' },
       { key: 'endDate', label: '结束日期' },
       { key: 'ic', label: 'IC' },
       { key: 'icir', label: 'ICIR' },
-      { key: 'topReturn', label: 'Top组收益' },
-      { key: 'bottomReturn', label: 'Bottom组收益' },
       { key: 'longShortReturn', label: '多空收益' },
       { key: 'annualReturn', label: '年化收益' },
       { key: 'maxDrawdown', label: '最大回撤' },
@@ -67,9 +58,31 @@ export default {
 
     const sortColumn = ref('name')
     const sortOrder = ref('asc')
+    
+    const factors = computed(() => {
+      if (!props.factorData?.factor_info?.index) {
+        return [];
+      }
+      return props.factorData.factor_info.index.map((name, i) => ({
+        name,
+        className: props.factorData.factor_info.values.class_name[i],
+        startDate: props.factorData.date.values.min[i],
+        endDate: props.factorData.date.values.max[i],
+        ic: props.factorData.ic.values.ic[i],
+        icir: props.factorData.ic.values.icir[i],
+        topReturn: props.factorData.group.values.top_ret[i],
+        bottomReturn: props.factorData.group.values.bottom_ret[i],
+        longShortReturn: props.factorData.group.values.long_short_ret[i],
+        annualReturn: props.factorData.backtest_ret.values.annual_return[i],
+        maxDrawdown: props.factorData.backtest_ret.values.max_drawdown[i],
+        sharpeRatio: props.factorData.backtest_ret.values.sharpe_ratio[i],
+        calmarRatio: props.factorData.backtest_ret.values.calmar_ratio[i],
+        turnover: props.factorData.backtest_ret.values.turnover[i]
+      }));
+    });
 
     const sortedFactors = computed(() => {
-      return [...props.factors].sort((a, b) => {
+      return [...factors.value].sort((a, b) => {
         const valueA = a[sortColumn.value]
         const valueB = b[sortColumn.value]
 
@@ -118,44 +131,6 @@ export default {
 }
 </script>
 
-<style scoped>
-.factor-table {
-  width: 100%;
-  overflow-x: auto;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-th, td {
-  padding: 12px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-}
-
-th {
-  background-color: #f5f5f5;
-  cursor: pointer;
-  user-select: none;
-}
-
-th:hover {
-  background-color: #e9e9e9;
-}
-
-tr:hover {
-  background-color: #f9f9f9;
-}
-
-a {
-  color: #007bff;
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
+<style scoped lang="scss">
+@use '../assets/styles/base-factor';
 </style>

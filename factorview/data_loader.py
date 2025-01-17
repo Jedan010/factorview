@@ -2,6 +2,48 @@ import pandas as pd
 from quantfactor import FactorManagerAll, p
 
 
+def load_factor_info(
+    factor_names: list[str] = None,
+    table_names: list[str] = None,
+    class_names: list[str] = None,
+    status: list[str] = None,
+    develop_codes: list[str] = None,
+    factor_ids: list[str] = None,
+    creation_time: list[str] = None,
+    query: list[str] = None,
+    **kwargs,
+):
+    """取得因子信息"""
+
+    if query is None:
+        query = []
+    if isinstance(query, (str, tuple)):
+        query = [query]
+
+    if table_names is not None:
+        query.append("table_name", table_names)
+    if class_names is not None:
+        query.append("class_name", class_names)
+    if status is not None:
+        query.append("status", status)
+    else:
+        query.append("status not in  ('tmp')")
+    if develop_codes is not None:
+        query.append("develop_code", develop_codes)
+    if factor_ids is not None:
+        query.append("factor_id", factor_ids)
+    if creation_time is not None:
+        query.append("creation_time", creation_time)
+
+    factor_info_df = FactorManagerAll.get_info_factor(
+        factor_names=factor_names,
+        query=query,
+        is_cache=True,  # **kwargs
+    )
+
+    return factor_info_df
+
+
 def load_factor_stats(
     factor_names: list[str] = None,
     start_date: str = None,
@@ -13,7 +55,7 @@ def load_factor_stats(
 ):
     factor_info_df = FactorManagerAll.get_info_factor(
         factor_names=factor_names,
-        query=[("status not in  ('invalid', 'highlyCorr', 'tmp')")],
+        query=[("status not in  ('tmp')")],
         is_cache=True,
     )
     if factor_info_df.empty:

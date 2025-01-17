@@ -131,8 +131,4 @@ export default {
 
 <style lang="scss">
 @use '../assets/styles/base-factor';
-
-.filters {
-  // 使用全局样式，暗黑模式会自动应用
-}
 </style>

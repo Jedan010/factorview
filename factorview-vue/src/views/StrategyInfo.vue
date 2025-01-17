@@ -194,25 +194,5 @@ fetchStrategies()
 
 .strategy-info-container {
   @extend .base-container;
-
-  .data-table {
-    th {
-      cursor: pointer;
-      user-select: none;
-
-      &:hover {
-        background-color: var(--table-header-hover-bg);
-      }
-    }
-
-    .strategy-link {
-      color: var(--link-color);
-      text-decoration: none;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-  }
 }
 </style>

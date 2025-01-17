@@ -7,6 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from factorview.data_loader import (
+    load_factor_info,
     load_factor_perf,
     load_factor_stats,
     load_strategy_factor_stats,
@@ -78,7 +79,23 @@ async def strategy_perf(request: Request, strategy_name: str):
 
 @app.get("/api/factor")
 async def get_factor_info(request: Request):
-    factor_stats = load_factor_stats(**request.query_params)
+    factor_info = load_factor_info(**request.query_params)
+    return JSONResponse(
+        {
+            "factor_info": {
+                "values": clean_for_json(factor_info),
+                "index": clean_for_json(factor_info.index),
+            }
+        }
+    )
+
+
+@app.get("/api/factor/stats")
+async def get_factor_stats(request: Request):
+    params = {k: v if v else None for k, v in request.query_params.items()}
+    if "factor_names" in params and params["factor_names"]:
+        params["factor_names"] = params["factor_names"].split(",")
+    factor_stats = load_factor_stats(**params)
     return JSONResponse(
         {
             name: {
