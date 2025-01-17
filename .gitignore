@@ -7,3 +7,5 @@ log
 *.ipynb
 __pycache__
 .vscode
+
+node_modules
